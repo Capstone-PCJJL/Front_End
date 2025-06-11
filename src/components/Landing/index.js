@@ -1,5 +1,5 @@
 import '../Navbar.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
 import Container from '@mui/material/Container';
@@ -11,14 +11,15 @@ import { AiOutlineUser } from "react-icons/ai";
 
 
 function Landing() {
+    const [movies, setMovies] = useState([]);
     const pages = [
         { title: "Home", path: "/" },
         { title: "Recommendations", path: '/Recommendation' },
         { title: "Your List", path: '/YourList' },
     ];
-    
+
     const navigate = useNavigate();
-    
+
     const renderLinks = () =>
         pages.map((page) => (
             <li key={page.title}>
@@ -52,7 +53,7 @@ function Landing() {
                 }
 
                 const data = await response.json();
-                console.log('API Response:', data);
+                setMovies(data); // Save movies to state
             } catch (error) {
                 console.error('Error fetching movies:', error);
             }
@@ -83,7 +84,12 @@ function Landing() {
                 </div>
             </header>
             <div className="main-content">
-                
+                {movies.map((movie, index) => (
+                    <div key={index} className="movie-card">
+                        <h2 className="movie-title">{movie.title}</h2>
+                        <p className="movie-genres">{movie.genres}</p>
+                    </div>
+                ))}
             </div>
         </div>
     );
