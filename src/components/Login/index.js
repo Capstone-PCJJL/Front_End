@@ -11,7 +11,6 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
   const onSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -21,7 +20,7 @@ const Login = () => {
       await firebase.doSignInWithEmailAndPassword(email, password);
       setEmail('');
       setPassword('');
-      navigate('/dashboard'); // Adjust this route as needed
+      navigate('/dashboard');
     } catch (error) {
       setError(error.message);
     } finally {

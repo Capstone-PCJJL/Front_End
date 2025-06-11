@@ -5,6 +5,7 @@ import Landing from '../Landing';
 import YourList  from '../YourList';
 import Recommendation from '../Recommendation';
 import Login from '../Login';
+import Signup from '../Signup';
 
 const App = () => {
   return (
@@ -13,8 +14,9 @@ const App = () => {
         <Routes>
           <Route path="/Recommendation" element={<Recommendation />} />
           <Route path="/Your List" element={<YourList />} />
-          <Route path="/Home" element={<Landing />} />
-          <Route path="/" element={<Login />} />
+          <Route path="/" element={<Landing />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </div>
     </Router>
