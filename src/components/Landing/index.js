@@ -1,4 +1,4 @@
-import './App.css';
+import '../Navbar.css';
 import { useEffect } from 'react';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';
@@ -6,29 +6,39 @@ import Container from '@mui/material/Container';
 import Typography from "@mui/material/Typography";
 import Link from '@mui/material/Link';
 import { useNavigate } from 'react-router-dom';
+import { AiOutlineUser } from "react-icons/ai";
 
-const pages = [{
-    title: 'Recommendation',
-    path: './Search'
-}, {
-    title: 'Yourlist',
-    path: './YourList'
-}];
 
-const linkStyle = {
-    display: "flex",
-    justifyContent: "flex-end",
-    textDecoration: "none",
-    marginRight: "1rem",
-    cursor: "pointer",
-};
-
-const containerStyle = {
-    display: "flex",
-    justifyContent: "flex-end",
-};
 
 function Landing() {
+    const pages = [
+        { title: "Home", path: "/" },
+        { title: "Recommendations", path: '/Recommendation' },
+        { title: "Your List", path: '/YourList' },
+    ];
+    
+    const navigate = useNavigate();
+    
+    const renderLinks = () =>
+        pages.map((page) => (
+            <li key={page.title}>
+                <a
+                    href={page.path}
+                    className={
+                        window.location.pathname.toLowerCase() === page.path.toLowerCase()
+                            ? "active"
+                            : ""
+                    }
+                    onClick={(e) => {
+                        e.preventDefault();
+                        navigate(page.path);
+                    }}
+                >
+                    {page.title}
+                </a>
+            </li>
+        ));
+
     useEffect(() => {
         const testApiCall = async () => {
             try {
@@ -51,52 +61,30 @@ function Landing() {
         testApiCall();
     }, []);
 
-    const navigate = useNavigate();
-
     return (
-        <div className="App">
-            <header className="App-header">
-                <AppBar position='static'>
-                    <Typography 
-                            variant="h6"
-                            noWrap
-                            component="a"
-                            href="/"
-                            sx={{
-                              mr: 2,
-                              display: { xs: 'none', md: 'flex' },
-                              letterSpacing: '.2rem',
-                              color: 'inherit',
-                              textDecoration: 'none',
-                            }}
-                          >
-                            Home
-                    </Typography>
-                    <Container style={containerStyle}>
-                        {pages.map((page) => (
-                                <Link
-                                    color="inherit"
-                                    style={linkStyle}
-                                    onClick={() => navigate(page.path)}
-                                >
-                                    <Typography variant="h6" color="inherit" noWrap sx={{
-                                        mr: 2,
-                                        display: { xs: 'none', md: 'flex' },
-                                        letterSpacing: '.2rem',
-                                        color: 'inherit',
-                                        textDecoration: 'none',
-                                        marginLeft: 0
-                                        }}>
-                                            {page.title}
-                                    </Typography>
-                                </Link>
-                            ))}
-                    </Container>
-                </AppBar>
-                <p>
-                    Welcome to our Capstone Project
-                </p>
+        <div>
+            <header className="navbar">
+                <img
+                    src="logo-placeholder.png"
+                    alt="Logo"
+                    className="navbar-logo"
+                />
+                <ul className="navbar-links">{renderLinks()}</ul>
+                <div className="navbar-profile">
+                    <a
+                        href="/Profile"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate("/Profile");
+                        }}
+                    >
+                        <AiOutlineUser className="navbar-profile-icon" />
+                    </a>
+                </div>
             </header>
+            <div className="main-content">
+                
+            </div>
         </div>
     );
 }

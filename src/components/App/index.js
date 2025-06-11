@@ -4,6 +4,7 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import Landing from '../Landing';
 import YourList  from '../YourList';
 import Recommendation from '../Recommendation';
+import Profile from '../Profile';
 
 const App = () => {
   return (
@@ -11,7 +12,8 @@ const App = () => {
       <div>
         <Routes>
           <Route path="/Recommendation" element={<Recommendation />} />
-          <Route path="/Your List" element={<YourList />} />
+          <Route path="/YourList" element={<YourList />} />
+          <Route path="/Profile" element={<Profile />} />
           <Route path="/" element={<Landing />} />
         </Routes>
       </div>

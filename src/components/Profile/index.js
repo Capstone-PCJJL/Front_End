@@ -6,7 +6,7 @@ import { AiOutlineUser } from "react-icons/ai";
 
 
 
-function Recommendation() {
+function Profile() {
     const pages = [
         { title: "Home", path: "/" },
         { title: "Recommendations", path: '/Recommendation' },
@@ -35,6 +35,7 @@ function Recommendation() {
             </li>
         ));
     
+    const isActiveProfile = window.location.pathname.toLowerCase() === "/profile";
 
     
 
@@ -51,6 +52,7 @@ function Recommendation() {
                 <div className="navbar-profile">
                     <a
                         href="/Profile"
+                        className={isActiveProfile ? "active" : ""}
                         onClick={(e) => {
                             e.preventDefault();
                             navigate("/Profile");
@@ -67,4 +69,4 @@ function Recommendation() {
     );
 }
 
-export default Recommendation;
+export default Profile;
