@@ -1,11 +1,11 @@
 .container_s {
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
   min-height: 100vh;
   background-color: #f5f5f5;
   padding: 20px;
+  width: 100%;
 }
 
 .container_s h1 {
@@ -22,10 +22,16 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  margin: 0 auto;
+}
+
+.form form {
+  width: 100%;
 }
 
 .form-group {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .form-group input {
@@ -35,6 +41,7 @@
   border-radius: 4px;
   font-size: 16px;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .form-group input:focus {
@@ -47,6 +54,7 @@
   font-size: 14px;
   margin-top: 5px;
   display: block;
+  text-align: center;
 }
 
 .btn {
@@ -62,7 +70,7 @@
   margin-top: 10px;
 }
 
-.btn:hover {
+.btn:hover:not(:disabled) {
   background-color: #357abd;
 }
 
@@ -71,8 +79,22 @@
   cursor: not-allowed;
 }
 
-p {
+.signup-footer {
   margin-top: 20px;
   text-align: center;
+  width: 100%;
+}
+
+.signup-footer a {
   color: #4a90e2;
+  text-decoration: none;
+}
+
+.signup-footer a:hover {
+  text-decoration: underline;
+}
+
+.signup-footer p {
+  margin: 0;
+  color: #666;
 }

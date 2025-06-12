@@ -5,6 +5,7 @@
   min-height: 100vh;
   background-color: #f5f5f5;
   padding: 20px;
+  width: 100%;
 }
 
 .login-box {
@@ -14,6 +15,11 @@
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
   width: 100%;
   max-width: 400px;
+  margin: 0 auto;
+}
+
+.login-box form {
+  width: 100%;
 }
 
 .login-box h1 {
@@ -25,6 +31,7 @@
 
 .form-group {
   margin-bottom: 20px;
+  width: 100%;
 }
 
 .form-control {
@@ -34,6 +41,7 @@
   border-radius: 4px;
   font-size: 16px;
   transition: border-color 0.3s ease;
+  box-sizing: border-box;
 }
 
 .form-control:focus {
@@ -51,6 +59,7 @@
   font-size: 16px;
   cursor: pointer;
   transition: background-color 0.3s ease;
+  margin-top: 10px;
 }
 
 .login-button:hover:not(.disabled) {
@@ -72,6 +81,7 @@
 .login-footer {
   margin-top: 20px;
   text-align: center;
+  width: 100%;
 }
 
 .login-footer a {
