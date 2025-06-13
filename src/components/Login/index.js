@@ -1,7 +1,7 @@
 import React, { useState, useContext } from 'react'; // <-- include useContext here
-import { withFirebase } from '../Firebase';
+import { withFirebase } from '../Firebase/index.js';
 import { useNavigate } from 'react-router-dom';
-import FirebaseContext from '../Firebase/context';
+import FirebaseContext from '../Firebase/context.js';
 import './Login.css';
 
 const Login = () => {
@@ -20,7 +20,7 @@ const Login = () => {
       await firebase.doSignInWithEmailAndPassword(email, password);
       setEmail('');
       setPassword('');
-      navigate('/dashboard');
+      navigate('/');
     } catch (error) {
       setError(error.message);
     } finally {
