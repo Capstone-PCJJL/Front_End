@@ -1,6 +1,5 @@
 import mysql from 'mysql';
 import config from './config.js';
-import fetch from 'node-fetch';
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -20,7 +19,7 @@ app.use(express.static(path.join(__dirname, "client/build")));
 app.post('/api/getMovies', (req, res) => {
 	const connection = mysql.createConnection(config);
   
-	const sql = 'SELECT * FROM movie_capstone_db.checkpoints';
+	const sql = 'SELECT * FROM movie_capstone_db.movies_raw LIMIT 20;';
 	connection.query(sql, (error, results) => {
 	  if (error) {
 		console.error(error.message);

@@ -6,6 +6,7 @@ import YourList from '../YourList';
 import Recommendation from '../Recommendation';
 import Login from '../Login';
 import Signup from '../Signup';
+import Profile from '../Profile';
 
 const App = () => {
   return (
@@ -15,15 +16,13 @@ const App = () => {
           {/* Public routes - accessible without authentication */}
           <Route path="/signup" element={<Signup />} />
           <Route path="/login" element={<Login />} />
-          
           {/* Protected routes - require authentication */}
           <Route path="/Recommendation" element={<Recommendation />} />
-          <Route path="/Your List" element={<YourList />} />
+          <Route path="/YourList" element={<YourList />} />
           <Route path="/Home" element={<Landing />} />
-          
+          <Route path="/Profile" element={<Profile />} />
           {/* Default route - redirect to login (users can choose signup or login) */}
           <Route path="/" element={<Navigate to="/login" replace />} />
-          
           {/* Catch all other routes and redirect to login */}
           <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>

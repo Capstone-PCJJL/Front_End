@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-const YourList = () => {
-  // your component code
-};
-=======
 import '../Navbar.css';
 import { useEffect } from 'react';
 import * as React from 'react';
@@ -11,7 +6,7 @@ import { AiOutlineUser } from "react-icons/ai";
 
 
 
-function YourList() {
+function Profile() {
     const pages = [
         { title: "Home", path: "/" },
         { title: "Recommendations", path: '/Recommendation' },
@@ -40,6 +35,7 @@ function YourList() {
             </li>
         ));
     
+    const isActiveProfile = window.location.pathname.toLowerCase() === "/profile";
 
     
 
@@ -56,6 +52,7 @@ function YourList() {
                 <div className="navbar-profile">
                     <a
                         href="/Profile"
+                        className={isActiveProfile ? "active" : ""}
                         onClick={(e) => {
                             e.preventDefault();
                             navigate("/Profile");
@@ -71,6 +68,5 @@ function YourList() {
         </div>
     );
 }
->>>>>>> main
 
-export default YourList;
+export default Profile;

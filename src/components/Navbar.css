@@ -1,0 +1,94 @@
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #1c1b2d;
+  padding: 0 2rem;
+  height: 60px;
+}
+
+.navbar-logo {
+  height: 40px;
+  width: 40px;
+}
+
+.navbar-links {
+  display: flex;
+  gap: 2rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.navbar-links li a {
+  text-decoration: none;
+  color: #ccc;
+  font-size: 1rem;
+  font-weight: normal;
+}
+
+.navbar-links li a.active {
+  color: white;
+  font-weight: bold;
+}
+
+.navbar-profile {
+  display: flex;
+  align-items: center;
+}
+
+.navbar-profile-icon {
+  font-size: 1.5rem;
+  color: #ccc;
+  cursor: pointer;
+}
+
+.navbar-profile a.active .navbar-profile-icon {
+  color: white;
+  font-weight: bold;
+  font-size: 1.8rem;
+  text-shadow: 0 0 5px rgba(255, 255, 255, 0.8);
+  transition: transform 0.3s ease, text-shadow 0.3s ease;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to bottom, #1c1b2d, #3420b7);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.main-content {
+  flex-grow: 1;
+}
+
+.movie-card {
+  height: 200px;
+  border-radius: 15px;
+  background-color: #3b2e5a;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  display: flex;
+  align-items: left;
+  width: 95%;
+  box-sizing: border-box;
+  color: white;
+  flex-direction: column;
+  justify-content: top;
+  margin: 0 auto 1rem auto;
+}
+
+.movie-title {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.movie-genres {
+  margin-top: 0.25rem;
+  font-size: 0.9rem;
+  color: #ccc;
+  font-style: italic;
+}
