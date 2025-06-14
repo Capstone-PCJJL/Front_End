@@ -1,8 +1,3 @@
-<<<<<<< HEAD
-const Recommendation = () => {
-  // your component code
-};
-=======
 import '../Navbar.css';
 import { useEffect } from 'react';
 import * as React from 'react';
@@ -13,7 +8,7 @@ import { AiOutlineUser } from "react-icons/ai";
 
 function Recommendation() {
     const pages = [
-        { title: "Home", path: "/" },
+        { title: "Home", path: "/Home" },
         { title: "Recommendations", path: '/Recommendation' },
         { title: "Your List", path: '/YourList' },
     ];
@@ -71,6 +66,5 @@ function Recommendation() {
         </div>
     );
 }
->>>>>>> main
 
 export default Recommendation;

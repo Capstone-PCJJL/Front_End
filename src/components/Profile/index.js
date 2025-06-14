@@ -8,7 +8,7 @@ import { AiOutlineUser } from "react-icons/ai";
 
 function Profile() {
     const pages = [
-        { title: "Home", path: "/" },
+        { title: "Home", path: "/Home" },
         { title: "Recommendations", path: '/Recommendation' },
         { title: "Your List", path: '/YourList' },
     ];
