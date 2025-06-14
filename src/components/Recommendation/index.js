@@ -1,3 +1,8 @@
+<<<<<<< HEAD
+const Recommendation = () => {
+  // your component code
+};
+=======
 import '../Navbar.css';
 import { useEffect } from 'react';
 import * as React from 'react';
@@ -66,5 +71,6 @@ function Recommendation() {
         </div>
     );
 }
+>>>>>>> main
 
 export default Recommendation;
