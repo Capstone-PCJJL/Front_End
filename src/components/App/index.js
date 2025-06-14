@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import * as React from 'react';
-import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
 import Landing from '../Landing';
 import YourList from '../YourList';
 import Recommendation from '../Recommendation';
@@ -12,11 +12,20 @@ const App = () => {
     <Router>
       <div>
         <Routes>
+          {/* Public routes - accessible without authentication */}
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          
+          {/* Protected routes - require authentication */}
           <Route path="/Recommendation" element={<Recommendation />} />
           <Route path="/Your List" element={<YourList />} />
-          <Route path="/" element={<Landing />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/signup" element={<Signup />} />
+          <Route path="/Home" element={<Landing />} />
+          
+          {/* Default route - redirect to login (users can choose signup or login) */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          
+          {/* Catch all other routes and redirect to login */}
+          <Route path="*" element={<Navigate to="/login" replace />} />
         </Routes>
       </div>
     </Router>

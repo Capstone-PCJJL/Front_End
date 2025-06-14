@@ -61,13 +61,13 @@ const SignUp = () => {
         console.warn('Backend server not available, but Firebase auth succeeded:', backendError);
       }
 
-      // Reset form and navigate (even if backend failed)
+      // Reset form and navigate directly to Home
       setFirstName('');
       setLastName('');
       setUserName('');
       setEmail('');
       setPassword('');
-      navigate('/');
+      navigate('/Home');
     } catch (error) {
       console.error('Error creating user:', error);
       setError(error.message);
