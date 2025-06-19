@@ -7,6 +7,8 @@ import {
   signOut,
   sendPasswordResetEmail,
   updatePassword,
+  signInWithPopup,
+  GoogleAuthProvider
 } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -24,6 +26,7 @@ const app = initializeApp(firebaseConfig);
 class Firebase {
   constructor() {
     this.auth = getAuth(app);
+    this.googleProvider = new GoogleAuthProvider();
   }
   doCreateUserWithEmailAndPassword = (email, password) =>
     createUserWithEmailAndPassword(this.auth, email, password);
@@ -55,6 +58,8 @@ class Firebase {
       }
     });
   };
+
+  doSignInWithGoogle = () => signInWithPopup(this.auth, this.googleProvider);
 }
 
 export default Firebase;

@@ -27,6 +27,19 @@ const Login = () => {
     }
   };
 
+  const onGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      await firebase.doSignInWithGoogle();
+      navigate('/Home');
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const isInvalid = password === '' || email === '' || loading;
 
   return (
@@ -58,6 +71,15 @@ const Login = () => {
             className={`login-button ${isInvalid ? 'disabled' : ''}`}
           >
             {loading ? 'Logging in...' : 'Login'}
+          </button>
+
+          <button
+            type="button"
+            onClick={onGoogleSignIn}
+            className="login-button google-login"
+            disabled={loading}
+          >
+            {loading ? 'Logging in...' : 'Login with Google'}
           </button>
 
           {error && <div className="error-message">{error}</div>}
