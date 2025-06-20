@@ -38,30 +38,7 @@ const SignUp = () => {
       const authUser = await firebase.doCreateUserWithEmailAndPassword(email, password);
       console.log('User created successfully:', authUser);
 
-      // Try to store additional user data (optional - won't fail if backend is down)
-      try {
-        const response = await fetch('/api/SignUp', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            firstName,
-            lastName,
-            userName,
-            email,
-            password,
-          }),
-        });
-
-        if (!response.ok) {
-          console.warn('Failed to store user data in backend, but Firebase auth succeeded');
-        }
-      } catch (backendError) {
-        console.warn('Backend server not available, but Firebase auth succeeded:', backendError);
-      }
-
-      // Reset form and navigate (even if backend failed)
+      // Reset form and navigate
       setFirstName('');
       setLastName('');
       setUserName('');
