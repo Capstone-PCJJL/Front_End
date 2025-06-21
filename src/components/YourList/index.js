@@ -1,4 +1,4 @@
-import '../Navbar.css';
+import '../Styling.css';
 import { useEffect } from 'react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';

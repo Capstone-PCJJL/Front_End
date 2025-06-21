@@ -12,10 +12,10 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 
 app.use(express.static(path.join(__dirname, "client/build")));
 
-app.post('/api/getMovies', (req, res) => {
+app.get('/api/getMovies', (req, res) => {
   const connection = mysql.createConnection(config);
 
-  const sql = 'SELECT * FROM movie_capstone_db.movies_raw LIMIT 20;';
+  const sql = 'SELECT * FROM movie_capstone_db.movies LIMIT 20;';
   connection.query(sql, (error, results) => {
     if (error) {
       console.error(error.message);
