@@ -65,39 +65,53 @@ body {
 }
 
 .movie-card {
+  display: flex;
+  /* Arrange children horizontally */
+  flex-direction: row;
+  /* Ensure content aligns horizontally */
   height: 200px;
+  /* Maintain consistent height */
   border-radius: 15px;
   background-color: #3b2e5a;
   padding: 1rem;
   margin-bottom: 1rem;
-  display: flex;
-  align-items: left;
   width: 95%;
   box-sizing: border-box;
   color: white;
-  flex-direction: column;
-  justify-content: top;
   margin: 0 auto 1rem auto;
+  position: relative;
+  /* Enable absolute positioning for children */
+}
+
+.movie-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between; /* pushes rating to bottom */
+  flex-grow: 1; /* take remaining width */
+  height: 100%;
 }
 
 .movie-title {
   margin: 0;
   font-size: 1.5rem;
   font-weight: bold;
+  margin-bottom: 0.2rem;
 }
 
-.movie-genres {
-  margin-top: 0.25rem;
+.movie-overview {
+  margin-top: 0.2rem;
   font-size: 0.9rem;
   color: #ccc;
   font-style: italic;
+  margin-bottom: 0;
+  /* no margin-bottom:auto here because space-between handles it */
 }
 
 .movie-rating {
-  margin-top: 0.5rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
+  margin-bottom: 0;
 }
 
 .movie-rating label {
@@ -125,11 +139,13 @@ body {
 }
 
 .not-interested-button {
-  margin-top: 1rem;
-  padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  position: absolute;
+  right: 1rem; /* Aligns with the right edge of the card */
+  bottom: 1rem; /* Aligns with the bottom edge of the card */
+  padding: 0.25rem 0.5rem; /* Small, compact button */
+  font-size: 0.8rem; /* Slightly smaller font size */
   color: white;
-  background-color: #d9534f; 
+  background-color: #d9534f;
   border: none;
   border-radius: 5px;
   cursor: pointer;
@@ -137,4 +153,15 @@ body {
 
 .not-interested-button:hover {
   background-color: #c9302c;
+}
+
+.movie-poster {
+  height: 100%;
+  /* Fill the height of the card */
+  width: auto;
+  /* Keep the aspect ratio */
+  border-radius: 10px;
+  /* Rounded corners */
+  margin-right: 1rem;
+  /* Space between the poster and text */
 }
