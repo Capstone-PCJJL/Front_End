@@ -8,6 +8,8 @@ import { AiOutlineUser } from "react-icons/ai";
 
 function Recommendation() {
     const [movies, setMovies] = useState([]);
+    const [notInterested, setNotInterested] = useState([]);
+    const [ratings, setRatings] = useState([]);
     const pages = [
         { title: "Home", path: "/Home" },
         { title: "Recommendations", path: '/Recommendation' },
@@ -36,28 +38,39 @@ function Recommendation() {
             </li>
         ));
     
-        useEffect(() => {
-            const testApiCall = async () => {
-                try {
-                    const response = await fetch('/api/getMovies', {
-                        method: 'GET',
-                        headers: { 'Content-Type': 'application/json' },
-                    });
-    
-                    if (!response.ok) {
-                        throw new Error(`Error: ${response.statusText}`);
-                    }
-    
-                    const data = await response.json();
-                    setMovies(data); // Save movies to state
-                } catch (error) {
-                    console.error('Error fetching movies:', error);
+    useEffect(() => {
+        const testApiCall = async () => {
+            try {
+                const response = await fetch('/api/getMovies', {
+                    method: 'GET',
+                    headers: { 'Content-Type': 'application/json' },
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error: ${response.statusText}`);
                 }
-            };
+
+                const data = await response.json();
+                setMovies(data); 
+            } catch (error) {
+                console.error('Error fetching movies:', error);
+            }
+        };
+
+        testApiCall();
+    }, []);
     
-            testApiCall();
-        }, []);
-    
+    const handleRatingChange = (movieId, rating) => {
+        setRatings((prevRatings) => ({
+            ...prevRatings,
+            [movieId]: rating,
+        }));
+    };
+
+    const handleNotInterested = (movie) => {
+        setMovies((prevMovies) => prevMovies.filter((m) => m.movieId !== movie.movieId));
+        setNotInterested((prevList) => [...prevList, movie]);
+    };
 
 
     return (
@@ -82,10 +95,32 @@ function Recommendation() {
                 </div>
             </header>
             <div className="main-content">
-                {movies.map((movie, index) => (
-                    <div key={index} className="movie-card">
+                <h2>Movie Recommendations</h2>
+                {movies.map((movie) => (
+                    <div key={movie.movieId} className="movie-card">
                         <h2 className="movie-title">{movie.title}</h2>
                         <p className="movie-genres">{movie.genres}</p>
+                        <div className="movie-rating">
+                            <label htmlFor={`rating-${movie.movieId}`}>Rate this movie:</label>
+                            <select
+                                id={`rating-${movie.movieId}`}
+                                value={ratings[movie.movieId] || ""}
+                                onChange={(e) => handleRatingChange(movie.movieId, e.target.value)}
+                            >
+                                <option value="" disabled>Select rating</option>
+                                {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((rating) => (
+                                    <option key={rating} value={rating}>
+                                        {rating} ★
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
+                        <button
+                            className="not-interested-button"
+                            onClick={() => handleNotInterested(movie)}
+                        >
+                            Not Interested
+                        </button>
                     </div>
                 ))}
             </div>
