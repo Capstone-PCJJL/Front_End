@@ -1,4 +1,4 @@
-import '../Navbar.css';
+import '../Styling.css';
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 import AppBar from '@mui/material/AppBar';

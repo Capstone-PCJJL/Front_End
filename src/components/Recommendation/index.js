@@ -1,4 +1,4 @@
-import '../Navbar.css';
+import '../Styling.css';
 import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -7,9 +7,11 @@ import { AiOutlineUser } from "react-icons/ai";
 
 
 function Recommendation() {
+    // set up list of movies, notinterest movies, and ratings
     const [movies, setMovies] = useState([]);
     const [notInterested, setNotInterested] = useState([]);
     const [ratings, setRatings] = useState([]);
+    // Set up pages for naviation
     const pages = [
         { title: "Home", path: "/Home" },
         { title: "Recommendations", path: '/Recommendation' },
@@ -18,6 +20,7 @@ function Recommendation() {
 
     const navigate = useNavigate();
 
+    // Make pages have hyper links
     const renderLinks = () =>
         pages.map((page) => (
             <li key={page.title}>
@@ -38,6 +41,7 @@ function Recommendation() {
             </li>
         ));
 
+    // Grab a static 20 movies (the first 20) to start the recommendations with
     useEffect(() => {
         const testApiCall = async () => {
             try {
@@ -61,6 +65,7 @@ function Recommendation() {
         testApiCall();
     }, []);
 
+    // When rating is changes, update based on the movie id
     const handleRatingChange = (id, rating) => {
         setRatings((prevRatings) => ({
             ...prevRatings,
@@ -68,6 +73,7 @@ function Recommendation() {
         }));
     };
 
+    // when not interested pressed, remove movie from recs list and add to not interested list
     const handleNotInterested = (movie) => {
         setMovies((prevMovies) => prevMovies.filter((m) => m.id !== movie.id));
         setNotInterested((prevList) => [...prevList, movie]);
@@ -76,6 +82,7 @@ function Recommendation() {
 
     return (
         <div>
+            {/* Building Nav Bar */}
             <header className="navbar">
                 <img
                     src="logo-placeholder.png"
@@ -95,25 +102,29 @@ function Recommendation() {
                     </a>
                 </div>
             </header>
+            {/* Building Page Content */}
             <div className="main-content">
+                {/* Simple Title */}
                 <h2 style={{ color: 'white', fontWeight: 'bold', marginLeft: '20px' }}>Movie Recommendations</h2>
+                {/* List movies as movie-cards. Styling on Styling.css */}
                 {movies.map((movie) => (
                     <div key={movie.id} className="movie-card">
-                        {/* Poster (left side) */}
+                        {/* Insert Image */}
                         <img
                             src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
                             alt={`${movie.title} Poster`}
                             className="movie-poster"
                         />
-
-                        {/* Text and controls (right side) */}
+                        {/* Build movie info (title, overview, rating) */}
                         <div className="movie-info">
+                            {/* Header is only title and overview since they are at the top while ratings are at the bottom */}
                             <div className="movie-header">
                                 <h2 className="movie-title">{movie.title}</h2>
                                 <p className="movie-overview">{movie.overview}</p>
                             </div>
                             <div className="movie-rating">
                                 <label htmlFor={`rating-${movie.id}`}>Rate this movie:</label>
+                                {/* Ratings drop down*/}
                                 <select
                                     id={`rating-${movie.id}`}
                                     value={ratings[movie.id] || ""}
@@ -128,6 +139,7 @@ function Recommendation() {
                                 </select>
                             </div>
                         </div>
+                        {/* Not interested button */}
                         <button
                             className="not-interested-button"
                             onClick={() => handleNotInterested(movie)}
