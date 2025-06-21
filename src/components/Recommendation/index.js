@@ -1,5 +1,5 @@
 import '../Navbar.css';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
@@ -7,6 +7,7 @@ import { AiOutlineUser } from "react-icons/ai";
 
 
 function Recommendation() {
+    const [movies, setMovies] = useState([]);
     const pages = [
         { title: "Home", path: "/Home" },
         { title: "Recommendations", path: '/Recommendation' },
@@ -35,7 +36,27 @@ function Recommendation() {
             </li>
         ));
     
-
+        useEffect(() => {
+            const testApiCall = async () => {
+                try {
+                    const response = await fetch('/api/getMovies', {
+                        method: 'GET',
+                        headers: { 'Content-Type': 'application/json' },
+                    });
+    
+                    if (!response.ok) {
+                        throw new Error(`Error: ${response.statusText}`);
+                    }
+    
+                    const data = await response.json();
+                    setMovies(data); // Save movies to state
+                } catch (error) {
+                    console.error('Error fetching movies:', error);
+                }
+            };
+    
+            testApiCall();
+        }, []);
     
 
 
@@ -61,7 +82,12 @@ function Recommendation() {
                 </div>
             </header>
             <div className="main-content">
-                
+                {movies.map((movie, index) => (
+                    <div key={index} className="movie-card">
+                        <h2 className="movie-title">{movie.title}</h2>
+                        <p className="movie-genres">{movie.genres}</p>
+                    </div>
+                ))}
             </div>
         </div>
     );
