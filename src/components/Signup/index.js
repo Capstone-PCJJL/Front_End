@@ -5,28 +5,29 @@ import './SignUp.css';
 
 const SignUp = () => {
   const firebase = useContext(FirebaseContext);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
-  const [userName, setUserName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const navigate = useNavigate();
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
-    // Validate all fields
-    if (!firstName || !lastName || !userName || !email || !password) {
+
+    if (!email || !password || !confirmPassword) {
       setError('All fields are required');
       return;
     }
 
-    // Validate email format
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(email)) {
       setError('Please enter a valid email address');
+      return;
+    }
+
+    if (password !== confirmPassword) {
+      setError('Passwords do not match');
       return;
     }
 
@@ -34,16 +35,12 @@ const SignUp = () => {
     setError(null);
 
     try {
-      // Create the user in Firebase
       const authUser = await firebase.doCreateUserWithEmailAndPassword(email, password);
       console.log('User created successfully:', authUser);
 
-      // Reset form and navigate
-      setFirstName('');
-      setLastName('');
-      setUserName('');
       setEmail('');
       setPassword('');
+      setConfirmPassword('');
       navigate('/Home');
     } catch (error) {
       console.error('Error creating user:', error);
@@ -53,43 +50,13 @@ const SignUp = () => {
     }
   };
 
-  const isInvalid = !firstName || !lastName || !userName || !email || !password || loading;
+  const isInvalid = !email || !password || !confirmPassword || loading;
 
   return (
     <div className="container_s">
       <div className="form">
         <h1>Sign Up</h1>
         <form onSubmit={handleSubmit}>
-          <div className="form-group">
-            <input
-              type="text"
-              value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              placeholder="First Name"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="text"
-              value={lastName}
-              onChange={(e) => setLastName(e.target.value)}
-              placeholder="Last Name"
-              required
-            />
-          </div>
-
-          <div className="form-group">
-            <input
-              type="text"
-              value={userName}
-              onChange={(e) => setUserName(e.target.value)}
-              placeholder="Username"
-              required
-            />
-          </div>
-
           <div className="form-group">
             <input
               type="email"
@@ -106,6 +73,16 @@ const SignUp = () => {
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="Password"
+              required
+            />
+          </div>
+
+          <div className="form-group">
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(e) => setConfirmPassword(e.target.value)}
+              placeholder="Confirm Password"
               required
             />
           </div>
