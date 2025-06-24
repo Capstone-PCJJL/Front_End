@@ -28,6 +28,11 @@ app.post('/api/getMovies', (req, res) => {
   connection.end();
 });
 
+/*
+
+This is the signup endpoint. It creates a new user in the database.
+
+*/
 app.post('/api/createUser', (req, res) => {
   const { userId } = req.body;
 
@@ -45,23 +50,31 @@ app.post('/api/createUser', (req, res) => {
       return res.status(500).send('Error creating table');
     }
 
-    const insertUserSql = 'INSERT INTO users (userId) VALUES (?)';
-    connection.query(insertUserSql, [userId], (error) => {
+    const checkUserSql = 'SELECT userId FROM users WHERE userId = ?';
+    connection.query(checkUserSql, [userId], (error, results) => {
       if (error) {
-        if (error.code === 'ER_DUP_ENTRY') {
-          // User already exists, which is fine.
-          connection.end();
-          return res.status(200).send('User already exists');
-        }
-        console.error('Error inserting user:', error.message);
+        console.error('Error checking user existence:', error.message);
         connection.end();
-        return res.status(500).send('Error creating user');
+        return res.status(500).send('Error checking user');
       }
 
-      res.status(201).send('User created successfully');
-      connection.end();
+      if (results.length > 0) {
+        // User already exists
+        connection.end();
+        return res.status(200).send('User already exists');
+      }
+
+      const insertUserSql = 'INSERT INTO users (userId) VALUES (?)';
+      connection.query(insertUserSql, [userId], (error) => {
+        if (error) {
+          console.error('Error inserting user:', error.message);
+          connection.end();
+          return res.status(500).send('Error creating user');
+        }
+
+        connection.end();
+        res.status(201).send('User created successfully');
+      });
     });
   });
 });
-
-app.listen(port, () => console.log(`Listening on port ${port}`));

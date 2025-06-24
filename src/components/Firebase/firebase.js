@@ -28,6 +28,7 @@ class Firebase {
     this.auth = getAuth(app);
     this.googleProvider = new GoogleAuthProvider();
   }
+  
   doCreateUserWithEmailAndPassword = async (email, password) => {
     const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
     if (userCredential.user) {
@@ -42,7 +43,6 @@ class Firebase {
         });
       } catch (error) {
         console.error('Failed to create user in SQL database', error);
-        // We might want to handle this error more gracefully
       }
     }
     return userCredential;
@@ -76,22 +76,23 @@ class Firebase {
     });
   };
 
+
+ /* Current logic always sends the UID to the backend, even if the user already exists.
+  Within server.js check if the user already exists. If they do, do not send the UID to the backend.
+  CheckUserSql is the query to check if the user already exists.*/
   doSignInWithGoogle = async () => {
     const userCredential = await signInWithPopup(this.auth, this.googleProvider);
     if (userCredential.user) {
       const { uid } = userCredential.user;
-      // Check if this is a new user
-      const { additionalUserInfo } = userCredential;
-      if (additionalUserInfo?.isNewUser) {
-        try {
-          await fetch('/api/createUser', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ userId: uid }),
-          });
-        } catch (error) {
-          console.error('Failed to create user in SQL database', error);
-        }
+      console.log('Sending UID to backend:', uid);
+      try {
+        await fetch('/api/createUser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: uid }),
+        });
+      } catch (error) {
+        console.error('Failed to create user in SQL database', error);
       }
     }
     return userCredential;
