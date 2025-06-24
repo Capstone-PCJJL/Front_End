@@ -7,6 +7,8 @@ import {
   signOut,
   sendPasswordResetEmail,
   updatePassword,
+  signInWithPopup,
+  GoogleAuthProvider
 } from 'firebase/auth';
 
 const firebaseConfig = {
@@ -24,9 +26,27 @@ const app = initializeApp(firebaseConfig);
 class Firebase {
   constructor() {
     this.auth = getAuth(app);
+    this.googleProvider = new GoogleAuthProvider();
   }
-  doCreateUserWithEmailAndPassword = (email, password) =>
-    createUserWithEmailAndPassword(this.auth, email, password);
+  
+  doCreateUserWithEmailAndPassword = async (email, password) => {
+    const userCredential = await createUserWithEmailAndPassword(this.auth, email, password);
+    if (userCredential.user) {
+      const userId = userCredential.user.uid;
+      try {
+        await fetch('/api/createUser', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }),
+        });
+      } catch (error) {
+        console.error('Failed to create user in SQL database', error);
+      }
+    }
+    return userCredential;
+  };
 
   doSignInWithEmailAndPassword = (email, password) =>
     signInWithEmailAndPassword(this.auth, email, password);
@@ -54,6 +74,28 @@ class Firebase {
         reject(new Error('No user is signed in.'));
       }
     });
+  };
+
+
+ /* Current logic always sends the UID to the backend, even if the user already exists.
+  Within server.js check if the user already exists. If they do, do not send the UID to the backend.
+  CheckUserSql is the query to check if the user already exists.*/
+  doSignInWithGoogle = async () => {
+    const userCredential = await signInWithPopup(this.auth, this.googleProvider);
+    if (userCredential.user) {
+      const { uid } = userCredential.user;
+      console.log('Sending UID to backend:', uid);
+      try {
+        await fetch('/api/createUser', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ userId: uid }),
+        });
+      } catch (error) {
+        console.error('Failed to create user in SQL database', error);
+      }
+    }
+    return userCredential;
   };
 }
 

@@ -28,4 +28,53 @@ app.get('/api/getMovies', (req, res) => {
   connection.end();
 });
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+/*
+
+This is the signup endpoint. It creates a new user in the database.
+
+*/
+app.post('/api/createUser', (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).send('userId is required');
+  }
+
+  const connection = mysql.createConnection(config);
+
+  const createTableSql = 'CREATE TABLE IF NOT EXISTS users (userId VARCHAR(255) PRIMARY KEY)';
+  connection.query(createTableSql, (error) => {
+    if (error) {
+      console.error('Error creating table:', error.message);
+      connection.end();
+      return res.status(500).send('Error creating table');
+    }
+
+    const checkUserSql = 'SELECT userId FROM users WHERE userId = ?';
+    connection.query(checkUserSql, [userId], (error, results) => {
+      if (error) {
+        console.error('Error checking user existence:', error.message);
+        connection.end();
+        return res.status(500).send('Error checking user');
+      }
+
+      if (results.length > 0) {
+        // User already exists
+        connection.end();
+        return res.status(200).send('User already exists');
+      }
+
+      const insertUserSql = 'INSERT INTO users (userId) VALUES (?)';
+      connection.query(insertUserSql, [userId], (error) => {
+        if (error) {
+          console.error('Error inserting user:', error.message);
+          connection.end();
+          return res.status(500).send('Error creating user');
+        }
+
+        connection.end();
+        res.status(201).send('User created successfully');
+      });
+    });
+  });
+});
