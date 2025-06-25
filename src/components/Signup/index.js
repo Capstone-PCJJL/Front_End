@@ -41,7 +41,7 @@ const SignUp = () => {
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-      navigate('/Home');
+      navigate('/import-csv');
     } catch (error) {
       console.error('Error creating user:', error);
       setError(error.message);

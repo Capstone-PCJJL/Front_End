@@ -7,6 +7,7 @@ import Recommendation from '../Recommendation';
 import Login from '../Login';
 import Signup from '../Signup';
 import Profile from '../Profile';
+import ImportCsv from '../ImportCsv';
 
 const App = () => {
   return (
@@ -21,6 +22,7 @@ const App = () => {
           <Route path="/YourList" element={<YourList />} />
           <Route path="/Home" element={<Landing />} />
           <Route path="/Profile" element={<Profile />} />
+          <Route path="/import-csv" element={<ImportCsv />} />
           {/* Default route - redirect to login (users can choose signup or login) */}
           <Route path="/" element={<Navigate to="/login" replace />} />
           {/* Catch all other routes and redirect to login */}

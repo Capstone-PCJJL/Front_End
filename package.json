@@ -11,6 +11,8 @@
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
     "@testing-library/user-event": "^13.5.0",
+    "body-parser": "^2.2.0",
+    "express": "^5.1.0",
     "firebase": "^11.9.1",
     "mysql": "^2.18.1",
     "node-fetch": "^3.3.2",
