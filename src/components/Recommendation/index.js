@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
-
+import MovieCard from './MovieCard';
 
 
 function Recommendation() {
@@ -11,6 +11,7 @@ function Recommendation() {
     const [movies, setMovies] = useState([]);
     const [notInterested, setNotInterested] = useState([]);
     const [ratings, setRatings] = useState([]);
+    
     // Set up pages for naviation
     const pages = [
         { title: "Home", path: "/Home" },
@@ -104,49 +105,15 @@ function Recommendation() {
             </header>
             {/* Building Page Content */}
             <div className="main-content">
-                {/* Simple Title */}
                 <h2 style={{ color: 'white', fontWeight: 'bold', marginLeft: '20px' }}>Movie Recommendations</h2>
-                {/* List movies as movie-cards. Styling on Styling.css */}
                 {movies.map((movie) => (
-                    <div key={movie.id} className="movie-card">
-                        {/* Insert Image */}
-                        <img
-                            src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
-                            alt={`${movie.title} Poster`}
-                            className="movie-poster"
-                        />
-                        {/* Build movie info (title, overview, rating) */}
-                        <div className="movie-info">
-                            {/* Header is only title and overview since they are at the top while ratings are at the bottom */}
-                            <div className="movie-header">
-                                <h2 className="movie-title">{movie.title}</h2>
-                                <p className="movie-overview">{movie.overview}</p>
-                            </div>
-                            <div className="movie-rating">
-                                <label htmlFor={`rating-${movie.id}`}>Rate this movie:</label>
-                                {/* Ratings drop down*/}
-                                <select
-                                    id={`rating-${movie.id}`}
-                                    value={ratings[movie.id] || ""}
-                                    onChange={(e) => handleRatingChange(movie.id, e.target.value)}
-                                >
-                                    <option value="" disabled>Select rating</option>
-                                    {[0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5].map((rating) => (
-                                        <option key={rating} value={rating}>
-                                            {rating} ★
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                        {/* Not interested button */}
-                        <button
-                            className="not-interested-button"
-                            onClick={() => handleNotInterested(movie)}
-                        >
-                            Not Interested
-                        </button>
-                    </div>
+                    <MovieCard
+                        key={movie.id}
+                        movie={movie}
+                        rating={ratings[movie.id]}
+                        onRate={handleRatingChange}
+                        onNotInterested={handleNotInterested}
+                    />
                 ))}
             </div>
         </div>

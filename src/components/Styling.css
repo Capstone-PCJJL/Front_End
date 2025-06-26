@@ -64,6 +64,22 @@ body {
   flex-grow: 1;
 }
 
+.home-card {
+  margin-top: 1rem;
+  display: flex;
+  flex-direction: row;
+  height: 600px;
+  border-radius: 15px;
+  background-color: #3b2e5a;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  width: 95%;
+  box-sizing: border-box;
+  color: white;
+  margin: 0 auto 1rem auto;
+  position: relative;
+}
+
 .movie-card {
   display: flex;
   flex-direction: row;
@@ -91,7 +107,13 @@ body {
   margin: 0;
   font-size: 1.5rem;
   font-weight: bold;
-  margin-bottom: 0.2rem;
+  margin-bottom: 1rem;
+}
+
+.movie-date {
+  font-size: 1.25rem;
+  color: white;
+  opacity: 0.6;
 }
 
 .movie-overview {
@@ -155,4 +177,67 @@ body {
   width: auto;
   border-radius: 10px;
   margin-right: 1rem;
+}
+
+.movie-genres {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 0.5rem;
+}
+
+.genre-label {
+  color: white;
+  font-weight: bold;
+}
+
+.genre-list {
+  color: #d8b4fe; /* Light purple */
+}
+
+.movie-runtime {
+  font-size: 1rem;
+  margin-top: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.runtime-label {
+  color: white;
+  font-weight: bold;
+}
+
+.runtime-list {
+  color: #d8b4fe;
+}
+
+.movie-credits {
+  font-size: 1rem;
+  margin-top: 1rem;
+  margin-bottom: 1rem;
+}
+
+.movie-actors {
+  font-size: 1rem;
+}
+
+.actors-label {
+  color: white;
+  font-weight: bold;
+}
+
+.actors-names {
+  color: #d8b4fe;
+}
+
+.movie-director {
+  font-size: 1rem;
+  margin-bottom: 0.25rem;
+}
+
+.director-label {
+  color: white;
+  font-weight: bold;
+}
+
+.director-name {
+  color: #d8b4fe;
 }
