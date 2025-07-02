@@ -83,7 +83,7 @@ body {
 .movie-card {
   display: flex;
   flex-direction: row;
-  height: 200px;
+  height: 300px;
   border-radius: 15px;
   background-color: #3b2e5a;
   padding: 1rem;
@@ -240,4 +240,14 @@ body {
 
 .director-name {
   color: #d8b4fe;
+}
+
+.loading-screen {
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #0f0f0f; /* or match your app bg */
+  color: white;
+  font-family: sans-serif;
 }
