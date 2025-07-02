@@ -10,35 +10,39 @@ const Login = () => {
   const [error, setError] = useState(null);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-  const onSubmit = async (event) => {
-    event.preventDefault();
-    setLoading(true);
-    setError(null);
 
-    try {
-      await firebase.doSignInWithEmailAndPassword(email, password);
-      setEmail('');
-      setPassword('');
-      navigate('/Home');
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+const onSubmit = async (event) => {
+  event.preventDefault();
+  setLoading(true);
+  setError(null);
 
-  const onGoogleSignIn = async () => {
-    setLoading(true);
-    setError(null);
-    try {
-      await firebase.doSignInWithGoogle();
-      navigate('/Home');
-    } catch (error) {
-      setError(error.message);
-    } finally {
-      setLoading(false);
-    }
-  };
+  try {
+    const userCredential = await firebase.doSignInWithEmailAndPassword(email, password); 
+    localStorage.setItem('userId', userCredential.user.uid);
+    setEmail('');
+    setPassword('');
+    navigate('/Home');
+  } catch (error) {
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
+const onGoogleSignIn = async () => {
+  setLoading(true);
+  setError(null);
+  try {
+    const userCredential = await firebase.doSignInWithGoogle(); // ✅ capture return value
+    localStorage.setItem('userId', userCredential.user.uid); // ✅ safe now
+    navigate('/Home');
+  } catch (error) {
+    setError(error.message);
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   const isInvalid = password === '' || email === '' || loading;
 

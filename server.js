@@ -3,8 +3,10 @@ const config = require('./config.js');
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const cors = require('cors');
 
 const app = express();
+app.use(cors());
 const port = process.env.PORT || 5500;
 const pool = mysql.createPool(config);
 
@@ -119,5 +121,40 @@ app.post('/api/createUser', (req, res) => {
     });
   });
 });
+
+
+app.post('/api/importCsv', (req, res) => {
+  const { data, userId } = req.body;
+
+  if (!Array.isArray(data) || !userId) {
+    console.error('Invalid data or missing userId');
+    return res.status(400).json({ error: 'Invalid data or missing userId' });
+  }
+
+
+  const insertSql = `
+    INSERT INTO user_movies (userId, name, year, watched_date, letterboxd_uri, rating)
+    VALUES ?
+  `;
+
+  const values = data.map(row => [
+    userId,
+    row.Name || null,
+    parseInt(row.Year) || null,
+    row.Date || null,
+    row['Letterboxd URI'] || null,
+    parseFloat(row.Rating) || null
+  ]);
+
+  pool.query(insertSql, [values], (error, results) => {
+    if (error) {
+      console.error('❌ MySQL insert error:', error.message);
+      return res.status(500).json({ error: 'Failed to insert CSV data' });
+    }
+    res.status(200).json({ message: 'CSV imported successfully', inserted: results.affectedRows });
+  });
+});
+
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

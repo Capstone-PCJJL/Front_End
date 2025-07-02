@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import Papa from 'papaparse';
 import './ImportCsv.css';
 
 const ImportCsv = () => {
@@ -13,17 +14,38 @@ const ImportCsv = () => {
     setError(null);
   };
 
-  const handleImport = (e) => {
+  const handleImport = async (e) => {
     e.preventDefault();
     if (!file) {
       setError('Please select a CSV file to import.');
       return;
     }
-    // Simulate import success
-    setImported(true);
-    setTimeout(() => {
-      navigate('/Home');
-    }, 1000);
+
+    const userId = localStorage.getItem('userId');
+
+    Papa.parse(file, {
+      header: true,
+      skipEmptyLines: true,
+      complete: async function (results) {
+        try {
+          const response = await fetch('/api/importCsv', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ data: results.data, userId }),
+          });
+
+          if (!response.ok) throw new Error('Failed to import CSV to server.');
+
+          setImported(true);
+          setTimeout(() => navigate('/Home'), 1000);
+        } catch (err) {
+          setError('Upload failed: ' + err.message);
+        }
+      },
+      error: function (err) {
+        setError('Parsing failed: ' + err.message);
+      },
+    });
   };
 
   return (
