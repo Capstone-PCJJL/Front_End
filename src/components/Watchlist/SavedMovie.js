@@ -1,7 +1,7 @@
 import React from 'react';
 
 // MovieCard containing all information associated with the movie
-const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
+const SavedMovie = ({ movie, rating, onRate, onNotInterested }) => (
     <div className="movie-card">
         <img
             src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
@@ -33,7 +33,7 @@ const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
                         <span className="director-label">Director: </span>
                         <span className="director-name">
                         {movie.credits
-                            ?.filter(c => c.job.toLowerCase() === "director")
+                            ?.filter(c => c.credit_type.toLowerCase() === "crew")
                             .map(c => c.name)
                             .join(', ')}
                         </span>
@@ -42,7 +42,7 @@ const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
                         <span className="actors-label">Actors: </span>
                         <span className="actors-names">
                         {movie.credits
-                            ?.filter(c => c.job.toLowerCase() === "actor")
+                            ?.filter(c => c.credit_type.toLowerCase() !== "crew")
                             .map(c => c.name)
                             .join(', ')}
                         </span>
@@ -73,4 +73,4 @@ const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
     </div>
 );
 
-export default MovieCard;
+export default SavedMovie;

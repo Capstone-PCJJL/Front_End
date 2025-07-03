@@ -251,3 +251,30 @@ body {
   color: white;
   font-family: sans-serif;
 }
+
+.recommendation-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 0 20px;
+  margin-bottom: 1.5rem;
+}
+
+.recommendation-title {
+  color: white;
+  font-weight: bold;
+  margin: 0;
+}
+
+.refresh-button {
+  background-color: #444;
+  color: white;
+  padding: 8px 12px;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+}
+
+.refresh-button:hover {
+  background-color: #666;
+}
