@@ -35,7 +35,7 @@ const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist}) =
             </span>
           </div>
           <div className="movie-actors">
-            <span className="actors-label">Actors: </span>
+            <span className="actors-label">Cast: </span>
             <span className="actors-names">
               {movie.credits
                 ?.filter(c => c.credit_type.toLowerCase() !== "crew")
@@ -64,13 +64,13 @@ const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist}) =
               </select>
             </div>
           )}
-    
+
           {onAddToWatchlist && (
-            <button className="add-toWatchList-button" onClick={() => onAddToWatchlist(movie)}>
+            <button className="add-to-watchlist-button" onClick={() => onAddToWatchlist(movie)}>
               ➕ Add to Watchlist
             </button>
           )}
-    
+
           {onNotInterested && (
             <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
               Not Interested

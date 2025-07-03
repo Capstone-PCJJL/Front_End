@@ -1,9 +1,10 @@
 import '../Styling.css';
 import './HomeStyling.css';
+import HomeCard from './HomeCard';
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
-import HomeCard from './HomeCard';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiRefreshCw } from 'react-icons/fi';
 
 // Home Page Component
@@ -168,13 +169,35 @@ const fetchAllMovieData = async () => {
     
           <div className="main-content">
             <div className="recommendation-header">
-                <h2 className="recommendation-title">
-                    Welcome to CinemaStack, please see your recommended films:
-                </h2>
-                <button onClick={fetchAllMovieData} className="refresh-button">
-                    <FiRefreshCw style={{ marginRight: '8px' }} />
-                    Refresh Recommendations
-                </button>
+              <h2 className="recommendation-title">
+                Please see your recommended films:
+              </h2>
+
+              {movies.length > 0 && currentIndex < movies.length && (
+                <div className="navigation-buttons">
+                  <button
+                    className="nav-button"
+                    onClick={() => setCurrentIndex(i => Math.max(i - 1, 0))}
+                    disabled={currentIndex === 0}
+                  >
+                    <FaArrowLeft style={{ marginRight: '8px' }} />
+                    Previous
+                  </button>
+                  <button
+                    className="nav-button"
+                    onClick={() => setCurrentIndex(i => Math.min(i + 1, movies.length - 1))}
+                    disabled={currentIndex >= movies.length - 1}
+                  >
+                    Next
+                    <FaArrowRight style={{ marginLeft: '8px' }} />
+                  </button>
+                </div>
+              )}
+
+              <button onClick={fetchAllMovieData} className="refresh-button">
+                <FiRefreshCw style={{ marginRight: '8px' }} />
+                Refresh Recommendations
+              </button>
             </div>
             {movies.length > 0 && (
               <HomeCard
@@ -185,24 +208,6 @@ const fetchAllMovieData = async () => {
                 onNotInterested={handleNotInterested}
                 onAddToWatchlist={handleAddToWatchlist}
               />
-            )}
-            {movies.length > 0 && currentIndex < movies.length && (
-              <div style={{ display: 'flex', gap: '1rem', marginLeft: '20px' }}>
-                <button
-                  className="prev-button"
-                  onClick={() => setCurrentIndex(i => Math.max(i - 1, 0))}
-                  disabled={currentIndex === 0}
-                >
-                  ← Previous
-                </button>
-                <button
-                  className="next-button"
-                  onClick={() => setCurrentIndex(i => Math.min(i + 1, movies.length - 1))}
-                  disabled={currentIndex >= movies.length - 1}
-                >
-                  Next →
-                </button>
-              </div>
             )}
           </div>
         </div>
