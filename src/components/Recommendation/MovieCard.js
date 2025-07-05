@@ -1,7 +1,12 @@
-import React from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { MovieListContext, MovieListProvider } from '../movieListContext';
 
 // MovieCard containing all information associated with the movie
-const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
+const MovieCard = ({ movie, rating, onRate, onNotInterested }) => {
+    const { movieList, addToMovieList, removeFromMovieList } = useContext(MovieListContext);
+    const isInMovieList = movieList.some(m => m.id === movie.id);
+    
+    return (
     <div className="movie-card">
         <img
             src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
@@ -65,12 +70,23 @@ const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
                 </div>
             )}
         </div>
+        <div className="action-buttons">
+        <button
+          className="add-to-list-button"
+          onClick={() =>
+            isInMovieList ? removeFromMovieList(movie.id) : addToMovieList(movie)
+          }
+        >
+          {isInMovieList ? 'Remove from your list' : 'Add to your list'}
+        </button>
         {onNotInterested && (
-            <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
-                Not Interested
-            </button>
+          <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
+            Not Interested
+          </button>
         )}
+      </div>
     </div>
 );
+        };
 
 export default MovieCard;

@@ -6,6 +6,7 @@ import Recommendation from '../Recommendation';
 import Login from '../Login';
 import Signup from '../Signup';
 import Profile from '../Profile';
+import { MovieListProvider } from '../movieListContext';
 
 const App = () => {
   const [movies, setMovies] = useState([]);
@@ -56,46 +57,48 @@ const App = () => {
   };
 
   return (
-    <Router>
-      <Routes>
-        {/* Public routes */}
-        <Route path="/signup" element={<Signup />} />
-        <Route path="/login" element={<Login />} />
-        
-        {/* Protected routes: pass props down */}
-        <Route 
-          path="/Recommendation" 
-          element={
-            <Recommendation 
-              movies={movies} 
-              ratings={ratings} 
-              onRate={handleRatingChange} 
-              onNotInterested={handleNotInterested} 
-            />
-          } 
-        />
-        <Route 
-          path="/YourList" 
-          element={<YourList />} 
-        />
-        <Route 
-          path="/Home" 
-          element={
-            <Landing 
-              movies={movies} 
-              ratings={ratings} 
-              onRate={handleRatingChange} 
-              onNotInterested={handleNotInterested} 
-            />
-          } 
-        />
-        <Route path="/Profile" element={<Profile />} />
+    <MovieListProvider>
+      <Router>
+        <Routes>
+          {/* Public routes */}
+          <Route path="/signup" element={<Signup />} />
+          <Route path="/login" element={<Login />} />
+          
+          {/* Protected routes: pass props down */}
+          <Route 
+            path="/Recommendation" 
+            element={
+              <Recommendation 
+                movies={movies} 
+                ratings={ratings} 
+                onRate={handleRatingChange} 
+                onNotInterested={handleNotInterested} 
+              />
+            } 
+          />
+          <Route 
+            path="/YourList" 
+            element={<YourList />} 
+          />
+          <Route 
+            path="/Home" 
+            element={
+              <Landing 
+                movies={movies} 
+                ratings={ratings} 
+                onRate={handleRatingChange} 
+                onNotInterested={handleNotInterested} 
+              />
+            } 
+          />
+          <Route path="/Profile" element={<Profile />} />
 
-        {/* Redirects */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
-      </Routes>
-    </Router>
+          {/* Redirects */}
+          <Route path="/" element={<Navigate to="/login" replace />} />
+          <Route path="*" element={<Navigate to="/login" replace />} />
+        </Routes>
+      </Router>
+    </MovieListProvider>
   );
 };
 

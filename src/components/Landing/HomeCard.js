@@ -1,9 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { MovieListContext, MovieListProvider } from '../movieListContext';
 
 // HomeCard contains all the information required for a user to rate and review initial movies
 const HomeCard = ({ movie, rating, onRate, onNotInterested }) => {
+  const { movieList, addToMovieList, removeFromMovieList } = useContext(MovieListContext);
   if (!movie) return null; // safety check
 
+  const isInMovieList = movieList.some(m => m.id === movie.id);
   return (
     <div className="home-card">
       <img
@@ -60,11 +63,21 @@ const HomeCard = ({ movie, rating, onRate, onNotInterested }) => {
           </div>
         )}
       </div>
-      {onNotInterested && (
-        <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
-          Not Interested
+      <div className="action-buttons">
+        <button
+          className="add-to-list-button"
+          onClick={() =>
+            isInMovieList ? removeFromMovieList(movie.id) : addToMovieList(movie)
+          }
+        >
+          {isInMovieList ? 'Remove from your list' : 'Add to your list'}
         </button>
-      )}
+        {onNotInterested && (
+          <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
+            Not Interested
+          </button>
+        )}
+      </div>
     </div>
   );
 };

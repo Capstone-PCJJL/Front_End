@@ -98,7 +98,7 @@ body {
 .movie-info {
   display: flex;
   flex-direction: column;
-  justify-content: space-between; 
+  justify-content: space-between;
   flex-grow: 1;
   height: 100%;
 }
@@ -155,23 +155,6 @@ body {
   box-shadow: 0 0 5px #7161a0;
 }
 
-.not-interested-button {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
-  color: white;
-  background-color: #d9534f;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.not-interested-button:hover {
-  background-color: #c9302c;
-}
-
 .movie-poster {
   height: 100%;
   width: auto;
@@ -191,7 +174,8 @@ body {
 }
 
 .genre-list {
-  color: #d8b4fe; /* Light purple */
+  color: #d8b4fe;
+  /* Light purple */
 }
 
 .movie-runtime {
@@ -247,7 +231,48 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0f0f0f; /* or match your app bg */
+  background-color: #0f0f0f;
+  /* or match your app bg */
   color: white;
   font-family: sans-serif;
+}
+
+.action-buttons {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.add-to-list-button {
+  padding: 0.25rem 0.5rem;
+  /* same as not-interested-button */
+  font-size: 0.8rem;
+  /* same */
+  /* ensures height consistency */
+  color: white;
+  background-color: #5cb85c;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.add-to-list-button:hover {
+  background-color: #4cae4c;
+}
+
+.not-interested-button {
+  padding: 0.25rem 0.5rem;
+  font-size: 0.8rem;
+  color: white;
+  background-color: #d9534f;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.not-interested-button:hover {
+  background-color: #c9302c;
 }
