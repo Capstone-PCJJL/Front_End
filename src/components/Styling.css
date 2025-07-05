@@ -62,22 +62,7 @@ body {
 
 .main-content {
   flex-grow: 1;
-}
-
-.home-card {
   margin-top: 1rem;
-  display: flex;
-  flex-direction: row;
-  height: 600px;
-  border-radius: 15px;
-  background-color: #3b2e5a;
-  padding: 1rem;
-  margin-bottom: 1rem;
-  width: 95%;
-  box-sizing: border-box;
-  color: white;
-  margin: 0 auto 1rem auto;
-  position: relative;
 }
 
 .movie-card {
@@ -105,71 +90,23 @@ body {
 
 .movie-title {
   margin: 0;
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: bold;
   margin-bottom: 1rem;
 }
 
 .movie-date {
-  font-size: 1.25rem;
+  font-size: 1.5rem;
   color: white;
   opacity: 0.6;
 }
 
 .movie-overview {
   margin-top: 0.2rem;
-  font-size: 0.9rem;
+  font-size: 1rem;
   color: #ccc;
   font-style: italic;
   margin-bottom: 0;
-}
-
-.movie-rating {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  margin-bottom: 0;
-}
-
-.movie-rating label {
-  font-size: 0.9rem;
-  color: #ddd;
-  margin: 0;
-}
-
-.movie-rating select {
-  width: 100px;
-  padding: 0.25rem;
-  font-size: 0.9rem;
-  border-radius: 5px;
-  border: 1px solid #555;
-  background-color: #2c2541;
-  color: #fff;
-  outline: none;
-  appearance: none;
-  cursor: pointer;
-}
-
-.movie-rating select:focus {
-  border-color: #7161a0;
-  box-shadow: 0 0 5px #7161a0;
-}
-
-.not-interested-button {
-  position: absolute;
-  right: 1rem;
-  bottom: 1rem;
-  padding: 0.25rem 0.5rem;
-  font-size: 0.8rem;
-  color: white;
-  background-color: #d9534f;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
-
-.not-interested-button:hover {
-  background-color: #c9302c;
 }
 
 .movie-poster {
@@ -180,7 +117,7 @@ body {
 }
 
 .movie-genres {
-  font-size: 1rem;
+  font-size: 1.25rem;
   margin-top: 0.5rem;
   margin-bottom: 0.5rem;
 }
@@ -195,7 +132,7 @@ body {
 }
 
 .movie-runtime {
-  font-size: 1rem;
+  font-size: 1.25rem;
   margin-top: 0.5rem;
   margin-bottom: 1rem;
 }
@@ -210,13 +147,13 @@ body {
 }
 
 .movie-credits {
-  font-size: 1rem;
+  font-size: 1.25rem;
   margin-top: 1rem;
   margin-bottom: 1rem;
 }
 
 .movie-actors {
-  font-size: 1rem;
+  font-size: 1.25rem;
 }
 
 .actors-label {
@@ -229,7 +166,7 @@ body {
 }
 
 .movie-director {
-  font-size: 1rem;
+  font-size: 1.25rem;
   margin-bottom: 0.25rem;
 }
 
@@ -247,7 +184,7 @@ body {
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #0f0f0f; /* or match your app bg */
+  background-color: #0f0f0f;
   color: white;
   font-family: sans-serif;
 }

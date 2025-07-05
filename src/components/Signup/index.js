@@ -37,16 +37,15 @@ const SignUp = () => {
     try {
       const authUser = await firebase.doCreateUserWithEmailAndPassword(email, password);
       console.log('User created successfully:', authUser);
+      localStorage.setItem('userId', authUser.user.uid); // ✅ fixed variable name
 
       setEmail('');
       setPassword('');
       setConfirmPassword('');
-      navigate('/Home');
+      navigate('/import-csv');
     } catch (error) {
       console.error('Error creating user:', error);
       setError(error.message);
-    } finally {
-      setLoading(false);
     }
   };
 
