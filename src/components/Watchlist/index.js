@@ -66,6 +66,22 @@ const Watchlist = () => {
             }
         };
 
+        const handleRemoveFromWatchlist = async (movieId) => {
+            try {
+                const res = await fetch('/api/removeFromWatchlist', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ userId, movieId }),
+                });
+
+                if (!res.ok) throw new Error('Failed to remove movie from watchlist');
+
+                setWatchlist((prev) => prev.filter((movie) => movie.id !== movieId));
+            } catch (err) {
+                console.error('Error removing movie:', err);
+            }
+        };
+
         useEffect(() => {
             fetchWatchlist();
         }, []);
@@ -101,6 +117,7 @@ const Watchlist = () => {
                     <MovieCard
                     key={movie.id}
                     movie={movie}
+                    onRemoveFromWatchlist={handleRemoveFromWatchlist}
                     // Add more props if needed
                     />
                 ))

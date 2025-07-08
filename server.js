@@ -28,9 +28,9 @@ app.get('/api/getMovies', (req, res) => {
   const sql = `
     SELECT * FROM movie_capstone_db.movies
     WHERE id NOT IN (
-      SELECT movie_id FROM patrick_test.not_interested WHERE user_id = ?
+      SELECT movie_id FROM movie_capstone_db.not_interested WHERE user_id = ?
       UNION
-      SELECT movie_id FROM patrick_test.watchlists WHERE user_id = ?
+      SELECT movie_id FROM movie_capstone_db.watchlists WHERE user_id = ?
     )
     LIMIT 20;
   `;
@@ -98,7 +98,7 @@ app.get('/api/getWatchlist', (req, res) => {
 
   const sql = `
     SELECT m.*
-    FROM patrick_test.watchlists w
+    FROM movie_capstone_db.watchlists w
     JOIN movies m ON w.movie_id = m.id
     WHERE w.user_id = ?
   `;
@@ -120,7 +120,7 @@ app.post('/api/notInterested', (req, res) => {
     return res.status(400).json({ error: 'Missing userId or movieId' });
   }
 
-  const sql = 'INSERT INTO patrick_test.not_interested (user_id, movie_id) VALUES (?, ?)';
+  const sql = 'INSERT INTO movie_capstone_db.not_interested (user_id, movie_id) VALUES (?, ?)';
   pool.query(sql, [userId, movieId], (err, results) => {
     if (err) {
       console.error('DB error:', err);
@@ -139,7 +139,7 @@ app.post('/api/addToWatchlist', (req, res) => {
     return res.status(400).json({ error: 'Missing userId or movieId' });
   }
 
-  const sql = 'INSERT INTO patrick_test.watchlists (user_id, movie_id) VALUES (?, ?)';
+  const sql = 'INSERT INTO movie_capstone_db.watchlists (user_id, movie_id) VALUES (?, ?)';
   pool.query(sql, [userId, movieId], (err, results) => {
     if (err) {
       console.error('DB error:', err);
@@ -231,6 +231,24 @@ app.post('/api/importCsv', (req, res) => {
       return res.status(500).json({ error: 'Failed to insert CSV data' });
     }
     res.status(200).json({ message: 'CSV imported successfully', inserted: results.affectedRows });
+  });
+});
+
+app.post('/api/removeFromWatchlist', (req, res) => {
+  const { userId, movieId } = req.body;
+
+  if (!userId || !movieId) {
+    return res.status(400).json({ error: 'Missing userId or movieId' });
+  }
+
+  const sql = 'DELETE FROM movie_capstone_db.watchlists WHERE user_id = ? AND movie_id = ?';
+  pool.query(sql, [userId, movieId], (err, results) => {
+    if (err) {
+      console.error('DB error:', err);
+      return res.status(500).json({ error: 'Failed to remove movie from watchlist' });
+    }
+
+    res.status(200).json({ success: true });
   });
 });
 

@@ -1,7 +1,8 @@
 import React from 'react';
+import '../Styling.css';
 
 // MovieCard containing all information associated with the movie
-const SavedMovie = ({ movie, rating, onRate, onNotInterested }) => (
+const SavedMovie = ({ movie, rating, onRate, onNotInterested, onRemoveFromWatchlist }) => (
     <div className="movie-card">
         <img
             src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
@@ -65,10 +66,22 @@ const SavedMovie = ({ movie, rating, onRate, onNotInterested }) => (
                 </div>
             )}
         </div>
-        {onNotInterested && (
-            <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
-                Not Interested
-            </button>
+        {(onRemoveFromWatchlist || onNotInterested) && (
+            <div className='movie-actions'>
+                {onRemoveFromWatchlist && (
+                    <button
+                        className="remove-from-watchlist-button"
+                        onClick={() => onRemoveFromWatchlist(movie.id)}
+                    >
+                        ➖Remove from Watchlist
+                    </button>
+                )}
+                {onNotInterested && (
+                    <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
+                        Not Interested
+                    </button>
+                )}
+            </div>
         )}
     </div>
 );
