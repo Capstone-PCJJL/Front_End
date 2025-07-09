@@ -5,6 +5,8 @@ import Watchlist from '../Watchlist';
 import Login from '../Login';
 import Signup from '../Signup';
 import Profile from '../Profile';
+import Project from '../Project';
+import Consent from '../Consent';
 
 const App = () => {
 
@@ -17,10 +19,16 @@ const App = () => {
         <Route path="/Watchlist" element={<Watchlist />} />
         <Route path="/Home" element={<Home/>} />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/project" element={<Project />} />
+        <Route path="/consent" element={<Consent />} />
 
         {/* Redirects */}
-        <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} />
+        <Route path="/" element={<Navigate to="/project" replace />} />
+        <Route path="*" element={<Navigate to="/project" replace />} />
+
+        {/* <Route path="/" element={<Navigate to="/login" replace />} />
+        <Route path="*" element={<Navigate to="/login" replace />} /> */}
+
       </Routes>
     </Router>
   );

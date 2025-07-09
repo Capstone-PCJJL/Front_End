@@ -11,37 +11,72 @@ const Login = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-const onSubmit = async (event) => {
-  event.preventDefault();
-  setLoading(true);
-  setError(null);
+  const handleAuthSuccess = async (firebaseUser) => {
+    const firebaseId = firebaseUser.uid;
+    const currentUserId = localStorage.getItem('userId');
 
-  try {
-    const userCredential = await firebase.doSignInWithEmailAndPassword(email, password); 
-    localStorage.setItem('userId', userCredential.user.uid);
-    setEmail('');
-    setPassword('');
-    navigate('/Home');
-  } catch (error) {
-    setError(error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      const response = await fetch('http://localhost:5500/api/linkOrSwitchUser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firebaseId, currentUserId }),
+      });
 
-const onGoogleSignIn = async () => {
-  setLoading(true);
-  setError(null);
-  try {
-    const userCredential = await firebase.doSignInWithGoogle(); // ✅ capture return value
-    localStorage.setItem('userId', userCredential.user.uid); // ✅ safe now
-    navigate('/Home');
-  } catch (error) {
-    setError(error.message);
-  } finally {
-    setLoading(false);
-  }
-};
+      const data = await response.json();
+
+      if (response.ok) {
+        // Replace localStorage userId with the linked/final one
+        localStorage.setItem('userId', data.userId);
+        localStorage.setItem('firebaseId', firebaseId);
+        navigate('/Home');
+      } else {
+        setError(data.error || 'Failed to link Firebase ID');
+      }
+    } catch (err) {
+      console.error(err);
+      setError('Failed to connect to server');
+    }
+  };
+
+  const onSubmit = async (event) => {
+    event.preventDefault();
+    setLoading(true);
+    setError(null);
+
+    try {
+      const userCredential = await firebase.doSignInWithEmailAndPassword(email, password); 
+      // Changing this to line call back function above
+      // --------------------------------------------------------
+      // localStorage.setItem('userId', userCredential.user.uid);
+      // navigate('/Home');
+      // --------------------------------------------------------
+      setEmail('');
+      setPassword('');
+      await handleAuthSuccess(userCredential.user);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const onGoogleSignIn = async () => {
+    setLoading(true);
+    setError(null);
+    try {
+      const userCredential = await firebase.doSignInWithGoogle(); // ✅ capture return value
+      // Changing this to line call back function above
+      // --------------------------------------------------------
+      // localStorage.setItem('userId', userCredential.user.uid); // ✅ safe now
+      // navigate('/Home');
+      // --------------------------------------------------------
+      await handleAuthSuccess(userCredential.user);
+    } catch (error) {
+      setError(error.message);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
   const isInvalid = password === '' || email === '' || loading;
