@@ -187,4 +187,50 @@ body {
   background-color: #0f0f0f;
   color: white;
   font-family: sans-serif;
+} 
+
+.remove-from-watchlist-button {
+  position: absolute;
+  bottom: 1rem;
+  right: 1rem;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  color: rgb(0, 0, 0);
+  background-color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
 }
+
+.remove-from-watchlist-button:hover {
+  background-color: #ff5e5e;
+  color: white;
+}
+
+.not-interested-button {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  font-size: 1rem;
+  color: rgb(0, 0, 0);
+  background-color: #ffffff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  white-space: nowrap;
+  vertical-align: middle;
+}
+
+.not-interested-button:hover {
+  background-color: #7e7e7e;
+  color: white;
+}
+
+.movie-actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
