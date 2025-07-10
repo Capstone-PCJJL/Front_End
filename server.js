@@ -65,7 +65,7 @@ app.get('/api/getGenres', (req, res) => {
 // API call that pulls the credits (top 9 actors and director)
 app.get('/api/getCredits', (req, res) => {
   const movieId = req.query.movieId;
-  console.log(`Received request for genres with movieId: ${movieId}`);
+  // console.log(`Received request for genres with movieId: ${movieId}`);
 
   if (!movieId) {
     return res.status(400).json({ error: 'Missing movieId parameter' });
@@ -271,19 +271,27 @@ app.post('/api/setConsent', (req, res) => {
   });
 });
 
+app.get('/api/getUserConsent', (req, res) => {
+  const userId = req.query.userId;
 
-// app.post('/api/createAnonUser', (req, res) => {
-//   const sql = 'INSERT INTO levent_test.users (consented) VALUES (FALSE)';
-//   pool.query(sql, (err, result) => {
-//     if (err) {
-//       console.error('Error creating anon user:', err.message);
-//       return res.status(500).json({ error: 'Failed to create anonymous user' });
-//     }
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing userId' });
+  }
 
-//     const insertedId = result.insertId;
-//     return res.status(201).json({ userId: insertedId });
-//   });
-// });
+  const sql = 'SELECT consented FROM levent_test.users WHERE userId = ?';
+  pool.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error checking consent:', err.message);
+      return res.status(500).json({ error: 'DB error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ consented: results[0].consented === 1 });
+  });
+});
 
 app.post('/api/getOrCreateUser', (req, res) => {
   const { firebaseId } = req.body;

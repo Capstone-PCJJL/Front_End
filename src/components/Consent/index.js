@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const Consent = () => {
@@ -6,7 +6,29 @@ const Consent = () => {
   const navigate = useNavigate();
 
   const userId = localStorage.getItem('userId');
-  console.log(userId)
+
+  useEffect(() => {
+    const checkConsentStatus = async () => {
+      if (!userId) {
+        navigate('/login'); // fallback if no user
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:5500/api/getUserConsent?userId=${userId}`);
+        if (!res.ok) throw new Error('Failed to check consent');
+
+        const data = await res.json();
+        if (data.consented) {
+          navigate('/Home'); // already consented → redirect
+        }
+      } catch (err) {
+        console.error('Error checking consent:', err);
+      }
+    };
+
+    checkConsentStatus();
+  }, [userId, navigate]);
 
   const handleConsentSubmit = async () => {
     if (!agreed) return;
