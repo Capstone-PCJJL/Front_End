@@ -124,37 +124,54 @@ app.post('/api/createUser', (req, res) => {
 
 
 app.post('/api/importCsv', (req, res) => {
-  const { data, userId } = req.body;
+  const { data, userId, table } = req.body;
 
-  if (!Array.isArray(data) || !userId) {
-    console.error('Invalid data or missing userId');
-    return res.status(400).json({ error: 'Invalid data or missing userId' });
+  if (!Array.isArray(data) || !userId || !table) {
+    console.error('Invalid data, missing userId, or missing table');
+    return res.status(400).json({ error: 'Invalid data, missing userId, or missing table' });
   }
 
+  let insertSql, values;
 
-  const insertSql = `
-    INSERT INTO user_movies (userId, name, year, watched_date, letterboxd_uri, rating)
-    VALUES ?
-  `;
-
-  const values = data.map(row => [
-    userId,
-    row.Name || null,
-    parseInt(row.Year) || null,
-    row.Date || null,
-    row['Letterboxd URI'] || null,
-    parseFloat(row.Rating) || null
-  ]);
+  if (table === 'ratings') {
+    // ratings.csv: Name, Year, Date, Letterboxd URI, Rating
+    insertSql = `
+      INSERT INTO ratings (userId, name, year, watched_date, letterboxd_uri, rating)
+      VALUES ?
+    `;
+    values = data.map(row => [
+      userId,
+      row.Name || null,
+      parseInt(row.Year) || null,
+      row.Date || null,
+      row['Letterboxd URI'] || null,
+      parseFloat(row.Rating) || null
+    ]);
+  } else if (table === 'likes') {
+    // likes/films.csv: Date, Name, Year, Letterboxd URI
+    insertSql = `
+      INSERT INTO likes (userId, date, name, year, letterboxd_uri)
+      VALUES ?
+    `;
+    values = data.map(row => [
+      userId,
+      row.Date || null,
+      row.Name || null,
+      parseInt(row.Year) || null,
+      row['Letterboxd URI'] || null
+    ]);
+  } else {
+    return res.status(400).json({ error: 'Invalid table specified' });
+  }
 
   pool.query(insertSql, [values], (error, results) => {
     if (error) {
       console.error('❌ MySQL insert error:', error.message);
       return res.status(500).json({ error: 'Failed to insert CSV data' });
     }
-    res.status(200).json({ message: 'CSV imported successfully', inserted: results.affectedRows });
+    res.status(200).json({ message: `${table} CSV imported successfully`, inserted: results.affectedRows });
   });
 });
-
 
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

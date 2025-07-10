@@ -91,6 +91,7 @@ const App = () => {
           } 
         />
         <Route path="/Profile" element={<Profile />} />
+        <Route path="/import-csv" element={<ImportCsv />} />
 
         {/* Redirects */}
         <Route path="/" element={<Navigate to="/login" replace />} />
