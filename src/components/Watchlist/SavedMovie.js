@@ -1,7 +1,8 @@
 import React from 'react';
+import '../Styling.css';
 
 // MovieCard containing all information associated with the movie
-const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
+const SavedMovie = ({ movie, rating, onRate, onNotInterested, onRemoveFromWatchlist }) => (
     <div className="movie-card">
         <img
             src={`https://image.tmdb.org/t/p/original${movie.poster_path}`}
@@ -33,7 +34,7 @@ const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
                         <span className="director-label">Director: </span>
                         <span className="director-name">
                         {movie.credits
-                            ?.filter(c => c.job.toLowerCase() === "director")
+                            ?.filter(c => c.credit_type.toLowerCase() === "crew")
                             .map(c => c.name)
                             .join(', ')}
                         </span>
@@ -42,7 +43,7 @@ const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
                         <span className="actors-label">Actors: </span>
                         <span className="actors-names">
                         {movie.credits
-                            ?.filter(c => c.job.toLowerCase() === "actor")
+                            ?.filter(c => c.credit_type.toLowerCase() !== "crew")
                             .map(c => c.name)
                             .join(', ')}
                         </span>
@@ -65,12 +66,24 @@ const MovieCard = ({ movie, rating, onRate, onNotInterested }) => (
                 </div>
             )}
         </div>
-        {onNotInterested && (
-            <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
-                Not Interested
-            </button>
+        {(onRemoveFromWatchlist || onNotInterested) && (
+            <div className='movie-actions'>
+                {onRemoveFromWatchlist && (
+                    <button
+                        className="remove-from-watchlist-button"
+                        onClick={() => onRemoveFromWatchlist(movie.id)}
+                    >
+                        ➖Remove from Watchlist
+                    </button>
+                )}
+                {onNotInterested && (
+                    <button className="not-interested-button" onClick={() => onNotInterested(movie)}>
+                        Not Interested
+                    </button>
+                )}
+            </div>
         )}
     </div>
 );
 
-export default MovieCard;
+export default SavedMovie;

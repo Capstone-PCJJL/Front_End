@@ -16,9 +16,26 @@ app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, "client/build")));
 
 // API call that pulls the first 20 movies
+// Does not pull movies if the user has "Not Interested the Film"
 app.get('/api/getMovies', (req, res) => {
-  const sql = 'SELECT * FROM movie_capstone_db.movies LIMIT 20;';
-  pool.query(sql, (error, results) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing userId' });
+  }
+
+  // Need to update later when using main database (Not patrick_test)
+  const sql = `
+    SELECT * FROM movie_capstone_db.movies
+    WHERE id NOT IN (
+      SELECT movie_id FROM movie_capstone_db.not_interested WHERE user_id = ?
+      UNION
+      SELECT movie_id FROM movie_capstone_db.watchlists WHERE user_id = ?
+    )
+    LIMIT 20;
+  `;
+
+  pool.query(sql, [userId, userId], (error, results) => {
     if (error) {
       console.error('Error fetching movies:', error);
       return res.status(500).json({ error: 'Error fetching movies' });
@@ -45,7 +62,7 @@ app.get('/api/getGenres', (req, res) => {
   });
 });
 
-// API call that pulls the credits (top 7 actors and director)
+// API call that pulls the credits (top 9 actors and director)
 app.get('/api/getCredits', (req, res) => {
   const movieId = req.query.movieId;
   console.log(`Received request for genres with movieId: ${movieId}`);
@@ -55,7 +72,7 @@ app.get('/api/getCredits', (req, res) => {
   }
 
   const sql = `
-      SELECT people.name, credits.job
+      SELECT people.name, credits.credit_type
       FROM movie_capstone_db.people 
       JOIN movie_capstone_db.credits ON people.id = credits.person_id 
       WHERE credits.movie_ID = ? 
@@ -68,6 +85,68 @@ app.get('/api/getCredits', (req, res) => {
       return res.status(500).json({ error: 'Error fetching genres' });
     }
     res.json(results);
+  });
+});
+
+// API call that pulls all saved movies from a user
+app.get('/api/getWatchlist', (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing userId' });
+  }
+
+  const sql = `
+    SELECT m.*
+    FROM movie_capstone_db.watchlists w
+    JOIN movies m ON w.movie_id = m.id
+    WHERE w.user_id = ?
+  `;
+
+  pool.query(sql, [userId], (error, results) => {
+    if (error) {
+      console.error('Error fetching watchlist:', error);
+      return res.status(500).json({ error: 'Failed to fetch watchlist' });
+    }
+    res.json(results);
+  });
+});
+
+// API PUT that assigns movie as "Not Interested"
+app.post('/api/notInterested', (req, res) => {
+  const { userId, movieId } = req.body;
+
+  if (!userId || !movieId) {
+    return res.status(400).json({ error: 'Missing userId or movieId' });
+  }
+
+  const sql = 'INSERT INTO movie_capstone_db.not_interested (user_id, movie_id) VALUES (?, ?)';
+  pool.query(sql, [userId, movieId], (err, results) => {
+    if (err) {
+      console.error('DB error:', err);
+      return res.status(500).json({ error: 'Failed to save not interested movie' });
+    }
+
+    res.status(200).json({ success: true });
+  });
+});
+
+// API PUT that assigns movie to watchlist
+app.post('/api/addToWatchlist', (req, res) => {
+  const { userId, movieId } = req.body;
+
+  if (!userId || !movieId) {
+    return res.status(400).json({ error: 'Missing userId or movieId' });
+  }
+
+  const sql = 'INSERT INTO movie_capstone_db.watchlists (user_id, movie_id) VALUES (?, ?)';
+  pool.query(sql, [userId, movieId], (err, results) => {
+    if (err) {
+      console.error('DB error:', err);
+      return res.status(500).json({ error: 'Failed to save watchlisted movie' });
+    }
+
+    res.status(200).json({ success: true });
   });
 });
 
@@ -170,6 +249,24 @@ app.post('/api/importCsv', (req, res) => {
       return res.status(500).json({ error: 'Failed to insert CSV data' });
     }
     res.status(200).json({ message: `${table} CSV imported successfully`, inserted: results.affectedRows });
+  });
+});
+
+app.post('/api/removeFromWatchlist', (req, res) => {
+  const { userId, movieId } = req.body;
+
+  if (!userId || !movieId) {
+    return res.status(400).json({ error: 'Missing userId or movieId' });
+  }
+
+  const sql = 'DELETE FROM movie_capstone_db.watchlists WHERE user_id = ? AND movie_id = ?';
+  pool.query(sql, [userId, movieId], (err, results) => {
+    if (err) {
+      console.error('DB error:', err);
+      return res.status(500).json({ error: 'Failed to remove movie from watchlist' });
+    }
+
+    res.status(200).json({ success: true });
   });
 });
 
