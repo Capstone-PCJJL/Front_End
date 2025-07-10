@@ -6,10 +6,13 @@ import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiRefreshCw } from 'react-icons/fi';
+import useConsentGuard from '../utils/useConsentGuard';
 
 // Home Page Component
 // Generates list of recommended movies
 const Home = () => {
+    const loadingConsent = useConsentGuard();
+
     const [currentIndex, setCurrentIndex] = useState(0); // Currently viewed movie (0-20)
     const [movies, setMovies] = useState([]); // Recommended Movies
     const [ratings, setRatings] = useState({}); // User rates movie
@@ -148,6 +151,7 @@ const fetchAllMovieData = async () => {
         fetchAllMovieData();
     }, []);
       
+    if (loadingConsent) return <div>Loading...</div>;
 
     return (
         <div>

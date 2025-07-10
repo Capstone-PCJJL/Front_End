@@ -3,10 +3,12 @@ import { useEffect } from 'react';
 import * as React from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
-
+import useConsentGuard from '../utils/useConsentGuard';
 
 
 function Profile() {
+    const loadingConsent = useConsentGuard();
+
     const pages = [
         { title: "Home", path: "/Home" },
         { title: "Watchlist", path: '/Watchlist' },
@@ -37,7 +39,7 @@ function Profile() {
     const isActiveProfile = window.location.pathname.toLowerCase() === "/profile";
 
     
-
+    if (loadingConsent) return <div>Loading...</div>;
 
     return (
         <div>

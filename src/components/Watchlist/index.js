@@ -3,8 +3,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
 import MovieCard from './SavedMovie';
+import useConsentGuard from '../utils/useConsentGuard';
 
 const Watchlist = () => {
+    const loadingConsent = useConsentGuard();
+
     const userId = localStorage.getItem('userId');
     const [watchlist, setWatchlist] = useState([]);
 
@@ -86,7 +89,8 @@ const Watchlist = () => {
             fetchWatchlist();
         }, []);
           
-    
+    if (loadingConsent) return <div>Loading...</div>;
+        
     return (
         <div>
             <header className="navbar">
