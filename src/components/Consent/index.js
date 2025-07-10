@@ -25,7 +25,7 @@ const Consent = () => {
       }
 
       // Success → redirect to login
-      navigate('/login');
+      navigate('/Home');
     } catch (err) {
       console.error(err);
       alert('There was an error submitting your consent.');

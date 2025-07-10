@@ -259,84 +259,60 @@ app.post('/api/setConsent', (req, res) => {
     return res.status(400).json({ error: 'Missing userId' });
   }
 
-  const checkSql = 'SELECT * FROM levent_test.users WHERE userId = ?';
+  const sql = 'UPDATE levent_test.users SET consented = TRUE WHERE userId = ?';
 
-  pool.query(checkSql, [userId], (err, results) => {
+  pool.query(sql, [userId], (err, result) => {
     if (err) {
-      console.error('Error checking user:', err.message);
-      return res.status(500).json({ error: 'Database error during check' });
+      console.error('Error updating consent:', err.message);
+      return res.status(500).json({ error: 'Failed to update consent' });
     }
 
-    if (results.length === 0) {
-      // Insert new user with consent = true
-      const insertSql = 'INSERT INTO levent_test.users (userId, consented) VALUES (?, TRUE)';
-      pool.query(insertSql, [userId], (err) => {
-        if (err) {
-          console.error('Error inserting user:', err.message);
-          return res.status(500).json({ error: 'Failed to insert new user' });
-        }
-        return res.status(201).json({ message: 'New user created with consent' });
-      });
-    } else {
-      // Update existing user's consent
-      const updateSql = 'UPDATE levent_test.users SET consented = TRUE WHERE userId = ?';
-      pool.query(updateSql, [userId], (err) => {
-        if (err) {
-          console.error('Error updating consent:', err.message);
-          return res.status(500).json({ error: 'Failed to update consent' });
-        }
-        return res.status(200).json({ message: 'Consent updated successfully' });
-      });
-    }
+    res.status(200).json({ success: true });
   });
 });
 
-app.post('/api/createAnonUser', (req, res) => {
-  const sql = 'INSERT INTO levent_test.users (consented) VALUES (FALSE)';
-  pool.query(sql, (err, result) => {
-    if (err) {
-      console.error('Error creating anon user:', err.message);
-      return res.status(500).json({ error: 'Failed to create anonymous user' });
-    }
 
-    const insertedId = result.insertId;
-    return res.status(201).json({ userId: insertedId });
-  });
-});
+// app.post('/api/createAnonUser', (req, res) => {
+//   const sql = 'INSERT INTO levent_test.users (consented) VALUES (FALSE)';
+//   pool.query(sql, (err, result) => {
+//     if (err) {
+//       console.error('Error creating anon user:', err.message);
+//       return res.status(500).json({ error: 'Failed to create anonymous user' });
+//     }
 
-app.post('/api/linkOrSwitchUser', (req, res) => {
-  const { firebaseId, currentUserId } = req.body;
+//     const insertedId = result.insertId;
+//     return res.status(201).json({ userId: insertedId });
+//   });
+// });
+
+app.post('/api/getOrCreateUser', (req, res) => {
+  const { firebaseId } = req.body;
 
   if (!firebaseId) {
     return res.status(400).json({ error: 'Missing firebaseId' });
   }
 
-  // 1. Check if the firebaseId already exists
-  const checkSql = 'SELECT userId FROM levent_test.users WHERE firebaseId = ?';
-  pool.query(checkSql, [firebaseId], (err, results) => {
+  const selectSql = 'SELECT userId FROM levent_test.users WHERE firebaseId = ?';
+  pool.query(selectSql, [firebaseId], (err, results) => {
     if (err) {
-      console.error('Error checking firebaseId:', err.message);
-      return res.status(500).json({ error: 'Failed to check firebaseId' });
+      console.error('Error querying user:', err.message);
+      return res.status(500).json({ error: 'DB error' });
     }
 
     if (results.length > 0) {
-      // User already exists → switch to their userId
+      // Existing user
       return res.status(200).json({ userId: results[0].userId });
     }
 
-    // 2. Link firebaseId to existing anonymous user (by internal userId)
-    if (!currentUserId) {
-      return res.status(400).json({ error: 'Missing current userId for linking' });
-    }
-
-    const updateSql = 'UPDATE movie_capstone_db.users SET firebaseId = ? WHERE userId = ?';
-    pool.query(updateSql, [firebaseId, currentUserId], (err) => {
+    // Insert new user
+    const insertSql = 'INSERT INTO levent_test.users (firebaseId, consented) VALUES (?, FALSE)';
+    pool.query(insertSql, [firebaseId], (err, result) => {
       if (err) {
-        console.error('Error linking firebaseId:', err.message);
-        return res.status(500).json({ error: 'Failed to link firebaseId' });
+        console.error('Error inserting user:', err.message);
+        return res.status(500).json({ error: 'Failed to create user' });
       }
 
-      return res.status(200).json({ userId: currentUserId });
+      return res.status(201).json({ userId: result.insertId });
     });
   });
 });
