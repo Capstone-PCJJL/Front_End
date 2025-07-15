@@ -89,7 +89,7 @@ const SignUp = () => {
           {error && <div className="error">{error}</div>}
 
           <button
-            className="btn"
+            className="signup-btn"
             type="submit"
             disabled={isInvalid}
           >

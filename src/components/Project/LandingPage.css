@@ -1,4 +1,4 @@
-/* @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@500;700&display=swap');
 
 * {
   margin: 0;
@@ -6,19 +6,15 @@
   box-sizing: border-box;
 }
 
-body,
-html,
-#root {
-  height: 100%;
-  margin: 0;
-  padding: 0;
+body {
   font-family: 'Inter', Arial, sans-serif;
   background: linear-gradient(135deg, #1E003F 0%, #000000 100%);
-  color: white;
-  overflow: hidden;
+    height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
+    color: white;
+    overflow: hidden;
 }
 
 .container {
@@ -45,6 +41,7 @@ html,
 }
 
 .description {
+    font-family: 'Inter', Arial, sans-serif;
   font-weight: 500;
   font-size: 1.2rem;
   line-height: 1.6;
@@ -60,12 +57,13 @@ html,
   display: flex;
   gap: 1.5rem;
   justify-content: center;
-  flex-wrap: wrap;
+
 }
 
 .btn {
+  font-family: 'Inter', Arial, sans-serif;
   font-weight: 700;
-  padding: 1rem 2.5rem;
+  padding: 1rem 0;
   font-size: 1.1rem;
   border: none;
   border-radius: 50px;
@@ -73,7 +71,10 @@ html,
   transition: all 0.3s ease;
   text-decoration: none;
   display: inline-block;
-  min-width: 140px;
+  width: 2in;
+  min-width: 2in;
+  max-width: 2in;
+  flex-shrink: 0;
 }
 
 .btn-primary {
@@ -102,22 +103,19 @@ html,
 }
 
 @media (max-width: 768px) {
-  .logo {
-    font-size: 3rem;
-    white-space: normal;
-  }
-
-  .description {
-    font-size: 1rem;
-    max-width: 95vw;
-  }
-
-  .button-container {
-    flex-direction: column;
-    align-items: center;
-  }
-
-  .btn {
-    width: 200px;
-  }
-} */
+    .logo {
+      font-size: 3rem;
+      white-space: normal;
+    }
+    .description {
+      font-size: 1rem;
+      max-width: 95vw;
+    }
+    .button-container {
+      flex-direction: column;
+      align-items: center;
+    }
+    .btn {
+      width: 200px;
+    }
+}
