@@ -65,7 +65,7 @@ app.get('/api/getGenres', (req, res) => {
 // API call that pulls the credits (top 9 actors and director)
 app.get('/api/getCredits', (req, res) => {
   const movieId = req.query.movieId;
-  console.log(`Received request for genres with movieId: ${movieId}`);
+  // console.log(`Received request for genres with movieId: ${movieId}`);
 
   if (!movieId) {
     return res.status(400).json({ error: 'Missing movieId parameter' });
@@ -251,6 +251,80 @@ app.post('/api/removeFromWatchlist', (req, res) => {
     res.status(200).json({ success: true });
   });
 });
+
+app.post('/api/setConsent', (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing userId' });
+  }
+
+  const sql = 'UPDATE levent_test.users SET consented = TRUE WHERE userId = ?';
+
+  pool.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error('Error updating consent:', err.message);
+      return res.status(500).json({ error: 'Failed to update consent' });
+    }
+
+    res.status(200).json({ success: true });
+  });
+});
+
+app.get('/api/getUserConsent', (req, res) => {
+  const userId = req.query.userId;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing userId' });
+  }
+
+  const sql = 'SELECT consented FROM levent_test.users WHERE userId = ?';
+  pool.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error checking consent:', err.message);
+      return res.status(500).json({ error: 'DB error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ consented: results[0].consented === 1 });
+  });
+});
+
+app.post('/api/getOrCreateUser', (req, res) => {
+  const { firebaseId } = req.body;
+
+  if (!firebaseId) {
+    return res.status(400).json({ error: 'Missing firebaseId' });
+  }
+
+  const selectSql = 'SELECT userId FROM levent_test.users WHERE firebaseId = ?';
+  pool.query(selectSql, [firebaseId], (err, results) => {
+    if (err) {
+      console.error('Error querying user:', err.message);
+      return res.status(500).json({ error: 'DB error' });
+    }
+
+    if (results.length > 0) {
+      // Existing user
+      return res.status(200).json({ userId: results[0].userId });
+    }
+
+    // Insert new user
+    const insertSql = 'INSERT INTO levent_test.users (firebaseId, consented) VALUES (?, FALSE)';
+    pool.query(insertSql, [firebaseId], (err, result) => {
+      if (err) {
+        console.error('Error inserting user:', err.message);
+        return res.status(500).json({ error: 'Failed to create user' });
+      }
+
+      return res.status(201).json({ userId: result.insertId });
+    });
+  });
+});
+
 
 
 
