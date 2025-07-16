@@ -8,6 +8,12 @@ import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiRefreshCw } from 'react-icons/fi';
 import useConsentGuard from '../utils/useConsentGuard';
 
+// Notification Popups
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
+
 // Home Page Component
 // Generates list of recommended movies
 const Home = () => {
@@ -102,6 +108,9 @@ const fetchAllMovieData = async () => {
         throw new Error('Failed to save not interested movie');
       }
 
+      toast.warn('Movie added to not interested', {
+        closeButton: false,
+      });
     } catch (error) {
       console.error('Error sending not interested to server:', error);
     }
@@ -129,7 +138,10 @@ const fetchAllMovieData = async () => {
       if (!response.ok) {
         throw new Error('Failed to add to watchlist');
       }
-  
+
+      toast.success('Added to Watchlist!', {
+        closeButton: false,
+      });
     } catch (error) {
       console.error('Error adding to watchlist:', error);
     }
@@ -157,7 +169,6 @@ const fetchAllMovieData = async () => {
       if (!rating) return;
     
       try {
-        console.log(rating)
         const response = await fetch('/api/addToRatings', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
@@ -172,10 +183,13 @@ const fetchAllMovieData = async () => {
           throw new Error('Failed to save rating');
         }
     
-        alert('Rating saved!');
+        toast.success('Rating saved!', {
+          closeButton: false,
+        });
+        setMovies(prev => prev.filter(movie => movie.id !== movieId));
+        
       } catch (error) {
         console.error('Error saving rating:', error);
-        alert('Error saving rating');
       }
     };
     
@@ -199,8 +213,9 @@ const fetchAllMovieData = async () => {
               </a>
             </div>
           </header>
-    
+          
           <div className="main-content">
+            <ToastContainer position="top-right" autoClose={3000} />
             <div className="recommendation-header">
               <h2 className="recommendation-title">
                 Please see your recommended films:

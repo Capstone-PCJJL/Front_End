@@ -31,11 +31,13 @@ app.get('/api/getMovies', (req, res) => {
       SELECT movie_id FROM movie_capstone_db.not_interested WHERE user_id = ?
       UNION
       SELECT movie_id FROM movie_capstone_db.watchlists WHERE user_id = ?
+      UNION
+      SELECT movie_id FROM patrick_test.ratings WHERE user_id = ?
     )
     LIMIT 20;
   `;
 
-  pool.query(sql, [userId, userId], (error, results) => {
+  pool.query(sql, [userId, userId, userId], (error, results) => {
     if (error) {
       console.error('Error fetching movies:', error);
       return res.status(500).json({ error: 'Error fetching movies' });
