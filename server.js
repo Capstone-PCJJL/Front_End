@@ -182,6 +182,27 @@ app.post('/api/addToRatings', (req, res) => {
   });
 });
 
+// API PUT that assigns likes
+app.post('/api/likeMovie', (req, res) => {
+    const { userId, movieId } = req.body;
+  
+    if (!userId || !movieId) {
+      return res.status(400).json({ error: 'Missing userId or movieId' });
+    }
+  
+    const sql = 'INSERT INTO patrick_test.likes (user_id, movie_id) VALUES (?, ?)';
+    pool.query(sql, [userId, movieId], (err, results) => {
+      if (err) {
+        console.error('DB error:', err);
+        return res.status(500).json({ error: 'Failed to save like' });
+      }
+  
+      res.status(200).json({ success: true });
+    });
+  });
+
+
+
 
 /*
 

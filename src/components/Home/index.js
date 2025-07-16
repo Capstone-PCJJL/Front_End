@@ -7,6 +7,7 @@ import { AiOutlineUser } from "react-icons/ai";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiRefreshCw } from 'react-icons/fi';
 import useConsentGuard from '../utils/useConsentGuard';
+import { FaHeart } from 'react-icons/fa';
 
 // Notification Popups
 import { ToastContainer } from 'react-toastify';
@@ -187,9 +188,36 @@ const fetchAllMovieData = async () => {
           closeButton: false,
         });
         setMovies(prev => prev.filter(movie => movie.id !== movieId));
-        
+
       } catch (error) {
         console.error('Error saving rating:', error);
+      }
+    };
+
+    // When user likes a movie
+    const handleLikeMovie = async (movie) => {
+      try {
+        const response = await fetch('/api/likeMovie', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            movieId: movie.id,
+          }),
+        });
+
+        console.log(response)
+    
+        if (!response.ok) {
+          throw new Error('Failed to like movie');
+        }
+    
+        toast.success('Movie liked!');
+        // Optionally remove the movie
+        setMovies(prev => prev.filter(m => m.id !== movie.id));
+      } catch (error) {
+        console.error('Error liking movie:', error);
+        toast.error('Error liking movie');
       }
     };
     
@@ -256,6 +284,7 @@ const fetchAllMovieData = async () => {
                 onNotInterested={handleNotInterested}
                 onAddToWatchlist={handleAddToWatchlist}
                 onConfirmRating={handleConfirmRating}
+                onLike={handleLikeMovie}
               />
             )}
           </div>
