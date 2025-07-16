@@ -134,3 +134,19 @@
     cursor: not-allowed;
     opacity: 0.6;
   }
+
+  .confirm-rating-button {
+    margin-left: 10px;
+    padding: 0.25rem 0.5rem;
+    font-size: 1rem;
+    background-color: #4caf50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  .confirm-rating-button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+  }

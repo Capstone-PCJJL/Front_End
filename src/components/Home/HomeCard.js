@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 
 // HomeCard contains all the information required for a user to rate and review initial movies
-const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist}) => {
+const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist, onConfirmRating}) => {
   if (!movie) return null; // safety check
 
   return (
@@ -62,6 +62,14 @@ const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist}) =
                   </option>
                 ))}
               </select>
+              {rating && (
+                <button
+                  className="confirm-rating-button"
+                  onClick={() => onConfirmRating(movie.id)}
+                >
+                  ✅ Confirm Rating
+                </button>
+              )}
             </div>
           )}
 

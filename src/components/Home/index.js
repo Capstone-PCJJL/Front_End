@@ -150,6 +150,35 @@ const fetchAllMovieData = async () => {
     useEffect(() => {
         fetchAllMovieData();
     }, []);
+
+    // When user confirms their rating
+    const handleConfirmRating = async (movieId) => {
+      const rating = ratings[movieId];
+      if (!rating) return;
+    
+      try {
+        console.log(rating)
+        const response = await fetch('/api/addToRatings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            movieId,
+            rating,
+          }),
+        });
+    
+        if (!response.ok) {
+          throw new Error('Failed to save rating');
+        }
+    
+        alert('Rating saved!');
+      } catch (error) {
+        console.error('Error saving rating:', error);
+        alert('Error saving rating');
+      }
+    };
+    
       
     if (loadingConsent) return <div>Loading...</div>;
 
@@ -211,6 +240,7 @@ const fetchAllMovieData = async () => {
                 onRate={handleRatingChange}
                 onNotInterested={handleNotInterested}
                 onAddToWatchlist={handleAddToWatchlist}
+                onConfirmRating={handleConfirmRating}
               />
             )}
           </div>
