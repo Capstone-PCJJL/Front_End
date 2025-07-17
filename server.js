@@ -24,18 +24,20 @@ app.get('/api/getMovies', (req, res) => {
     return res.status(400).json({ error: 'Missing userId' });
   }
 
-  // Need to update later when using main database (Not patrick_test)
+  // Change patrick_test when updated
   const sql = `
     SELECT * FROM movie_capstone_db.movies
     WHERE id NOT IN (
       SELECT movie_id FROM movie_capstone_db.not_interested WHERE user_id = ?
       UNION
       SELECT movie_id FROM movie_capstone_db.watchlists WHERE user_id = ?
+      UNION
+      SELECT movie_id FROM patrick_test.ratings WHERE user_id = ?
     )
     LIMIT 20;
   `;
 
-  pool.query(sql, [userId, userId], (error, results) => {
+  pool.query(sql, [userId, userId, userId], (error, results) => {
     if (error) {
       console.error('Error fetching movies:', error);
       return res.status(500).json({ error: 'Error fetching movies' });
@@ -43,6 +45,7 @@ app.get('/api/getMovies', (req, res) => {
     res.json(results);
   });
 });
+
 
 // API call that pulls the genres for a movieID
 app.get('/api/getGenres', (req, res) => {
@@ -61,6 +64,7 @@ app.get('/api/getGenres', (req, res) => {
     res.json(results);
   });
 });
+
 
 // API call that pulls the credits (top 9 actors and director)
 app.get('/api/getCredits', (req, res) => {
@@ -88,6 +92,7 @@ app.get('/api/getCredits', (req, res) => {
   });
 });
 
+
 // API call that pulls all saved movies from a user
 app.get('/api/getWatchlist', (req, res) => {
   const userId = req.query.userId;
@@ -112,6 +117,7 @@ app.get('/api/getWatchlist', (req, res) => {
   });
 });
 
+
 // API PUT that assigns movie as "Not Interested"
 app.post('/api/notInterested', (req, res) => {
   const { userId, movieId } = req.body;
@@ -131,6 +137,7 @@ app.post('/api/notInterested', (req, res) => {
   });
 });
 
+
 // API PUT that assigns movie to watchlist
 app.post('/api/addToWatchlist', (req, res) => {
   const { userId, movieId } = req.body;
@@ -149,6 +156,53 @@ app.post('/api/addToWatchlist', (req, res) => {
     res.status(200).json({ success: true });
   });
 });
+
+// API PUT that assigns ratings
+app.post('/api/addToRatings', (req, res) => {
+  const { userId, movieId, rating } = req.body;
+
+  if (!userId || !movieId || rating == null) {
+    return res.status(400).json({ error: 'Missing userId, movieId, or rating' });
+  }
+
+  // Convert to movie_capstone_db in production
+  const sql = `
+    INSERT INTO patrick_test.ratings (user_id, movie_id, rating)
+    VALUES (?, ?, ?)
+    ON DUPLICATE KEY UPDATE rating = VALUES(rating)
+  `;
+
+  pool.query(sql, [userId, movieId, rating], (err, results) => {
+    if (err) {
+      console.error('DB error:', err);
+      return res.status(500).json({ error: 'Failed to save movie rating' });
+    }
+
+    res.status(200).json({ success: true });
+  });
+});
+
+// API PUT that assigns likes
+app.post('/api/likeMovie', (req, res) => {
+    const { userId, movieId } = req.body;
+  
+    if (!userId || !movieId) {
+      return res.status(400).json({ error: 'Missing userId or movieId' });
+    }
+  
+    const sql = 'INSERT INTO patrick_test.likes (user_id, movie_id) VALUES (?, ?)';
+    pool.query(sql, [userId, movieId], (err, results) => {
+      if (err) {
+        console.error('DB error:', err);
+        return res.status(500).json({ error: 'Failed to save like' });
+      }
+  
+      res.status(200).json({ success: true });
+    });
+  });
+
+
+
 
 /*
 
@@ -259,7 +313,7 @@ app.post('/api/setConsent', (req, res) => {
     return res.status(400).json({ error: 'Missing userId' });
   }
 
-  const sql = 'UPDATE levent_test.users SET consented = TRUE WHERE userId = ?';
+  const sql = 'UPDATE movie_capstone_db.users SET consented = TRUE WHERE userId = ?';
 
   pool.query(sql, [userId], (err, result) => {
     if (err) {
@@ -278,7 +332,7 @@ app.get('/api/getUserConsent', (req, res) => {
     return res.status(400).json({ error: 'Missing userId' });
   }
 
-  const sql = 'SELECT consented FROM levent_test.users WHERE userId = ?';
+  const sql = 'SELECT consented FROM movie_capstone_db.users WHERE userId = ?';
   pool.query(sql, [userId], (err, results) => {
     if (err) {
       console.error('Error checking consent:', err.message);
@@ -300,7 +354,7 @@ app.post('/api/getOrCreateUser', (req, res) => {
     return res.status(400).json({ error: 'Missing firebaseId' });
   }
 
-  const selectSql = 'SELECT userId FROM levent_test.users WHERE firebaseId = ?';
+  const selectSql = 'SELECT userId FROM movie_capstone_db.users WHERE firebaseId = ?';
   pool.query(selectSql, [firebaseId], (err, results) => {
     if (err) {
       console.error('Error querying user:', err.message);
@@ -313,7 +367,7 @@ app.post('/api/getOrCreateUser', (req, res) => {
     }
 
     // Insert new user
-    const insertSql = 'INSERT INTO levent_test.users (firebaseId, consented) VALUES (?, FALSE)';
+    const insertSql = 'INSERT INTO movie_capstone_db.users (firebaseId, consented) VALUES (?, FALSE)';
     pool.query(insertSql, [firebaseId], (err, result) => {
       if (err) {
         console.error('Error inserting user:', err.message);
