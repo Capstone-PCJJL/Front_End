@@ -1,4 +1,4 @@
-import React, { useState, useContext } from 'react'; // <-- include useContext here
+import React, { useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FirebaseContext from '../Firebase/context';
 import './Login.css';
