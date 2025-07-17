@@ -1,29 +1,23 @@
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Inter:wght@500;700&display=swap');
 
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
-
-body {
+.landing-page {
   font-family: 'Inter', Arial, sans-serif;
   background: linear-gradient(135deg, #1E003F 0%, #000000 100%);
-    height: 100vh;
+  height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-    color: white;
-    overflow: hidden;
+  color: white;
+  overflow: hidden;
 }
 
-.container {
+.landing-page .container {
   text-align: center;
   max-width: 900px;
   padding: 2rem 1rem;
 }
 
-.logo {
+.landing-page .logo {
   font-family: 'Bebas Neue', Arial, sans-serif;
   font-size: 5rem;
   font-weight: normal;
@@ -33,15 +27,15 @@ body {
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-  text-fill-color: transparent;
+  color: transparent;
   text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
 }
 
-.description {
-    font-family: 'Inter', Arial, sans-serif;
+.landing-page .description {
+  font-family: 'Inter', Arial, sans-serif;
   font-weight: 500;
   font-size: 1.2rem;
   line-height: 1.6;
@@ -53,14 +47,13 @@ body {
   margin-right: auto;
 }
 
-.button-container {
+.landing-page .button-container {
   display: flex;
   gap: 1.5rem;
   justify-content: center;
-
 }
 
-.btn {
+.landing-page .btn {
   font-family: 'Inter', Arial, sans-serif;
   font-weight: 700;
   padding: 1rem 0;
@@ -77,45 +70,45 @@ body {
   flex-shrink: 0;
 }
 
-.btn-primary {
+.landing-page .btn-primary {
   background: #6B00B2;
   color: white;
   box-shadow: 0 4px 15px rgba(107, 0, 178, 0.4);
 }
 
-.btn-primary:hover {
+.landing-page .btn-primary:hover {
   background: #8e24aa;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(107, 0, 178, 0.6);
 }
 
-.btn-secondary {
+.landing-page .btn-secondary {
   background: rgba(255, 255, 255, 0.1);
   color: white;
   border: 2px solid rgba(255, 255, 255, 0.2);
   backdrop-filter: blur(10px);
 }
 
-.btn-secondary:hover {
+.landing-page .btn-secondary:hover {
   background: rgba(255, 255, 255, 0.2);
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(255, 255, 255, 0.2);
 }
 
 @media (max-width: 768px) {
-    .logo {
-      font-size: 3rem;
-      white-space: normal;
-    }
-    .description {
-      font-size: 1rem;
-      max-width: 95vw;
-    }
-    .button-container {
-      flex-direction: column;
-      align-items: center;
-    }
-    .btn {
-      width: 200px;
-    }
-}
+  .landing-page .logo {
+    font-size: 3rem;
+    white-space: normal;
+  }
+  .landing-page .description {
+    font-size: 1rem;
+    max-width: 95vw;
+  }
+  .landing-page .button-container {
+    flex-direction: column;
+    align-items: center;
+  }
+  .landing-page .btn {
+    width: 200px;
+  }
+} 
