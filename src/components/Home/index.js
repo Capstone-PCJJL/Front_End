@@ -6,10 +6,20 @@ import { useNavigate } from 'react-router-dom';
 import { AiOutlineUser } from "react-icons/ai";
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { FiRefreshCw } from 'react-icons/fi';
+import useConsentGuard from '../utils/useConsentGuard';
+import { FaHeart } from 'react-icons/fa';
+
+// Notification Popups
+import { ToastContainer } from 'react-toastify';
+import { toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
+
 
 // Home Page Component
 // Generates list of recommended movies
 const Home = () => {
+    const loadingConsent = useConsentGuard();
+
     const [currentIndex, setCurrentIndex] = useState(0); // Currently viewed movie (0-20)
     const [movies, setMovies] = useState([]); // Recommended Movies
     const [ratings, setRatings] = useState({}); // User rates movie
@@ -99,6 +109,9 @@ const fetchAllMovieData = async () => {
         throw new Error('Failed to save not interested movie');
       }
 
+      toast.warn('Movie added to not interested', {
+        closeButton: false,
+      });
     } catch (error) {
       console.error('Error sending not interested to server:', error);
     }
@@ -126,7 +139,10 @@ const fetchAllMovieData = async () => {
       if (!response.ok) {
         throw new Error('Failed to add to watchlist');
       }
-  
+
+      toast.success('Added to Watchlist!', {
+        closeButton: false,
+      });
     } catch (error) {
       console.error('Error adding to watchlist:', error);
     }
@@ -147,7 +163,66 @@ const fetchAllMovieData = async () => {
     useEffect(() => {
         fetchAllMovieData();
     }, []);
+
+    // When user confirms their rating
+    const handleConfirmRating = async (movieId) => {
+      const rating = ratings[movieId];
+      if (!rating) return;
+    
+      try {
+        const response = await fetch('/api/addToRatings', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            movieId,
+            rating,
+          }),
+        });
+    
+        if (!response.ok) {
+          throw new Error('Failed to save rating');
+        }
+    
+        toast.success('Rating saved!', {
+          closeButton: false,
+        });
+        setMovies(prev => prev.filter(movie => movie.id !== movieId));
+
+      } catch (error) {
+        console.error('Error saving rating:', error);
+      }
+    };
+
+    // When user likes a movie
+    const handleLikeMovie = async (movie) => {
+      try {
+        const response = await fetch('/api/likeMovie', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            userId,
+            movieId: movie.id,
+          }),
+        });
+
+        console.log(response)
+    
+        if (!response.ok) {
+          throw new Error('Failed to like movie');
+        }
+    
+        toast.success('Movie liked!');
+        // Optionally remove the movie
+        setMovies(prev => prev.filter(m => m.id !== movie.id));
+      } catch (error) {
+        console.error('Error liking movie:', error);
+        toast.error('Error liking movie');
+      }
+    };
+    
       
+    if (loadingConsent) return <div>Loading...</div>;
 
     return (
         <div>
@@ -166,8 +241,9 @@ const fetchAllMovieData = async () => {
               </a>
             </div>
           </header>
-    
+          
           <div className="main-content">
+            <ToastContainer position="top-right" autoClose={3000} />
             <div className="recommendation-header">
               <h2 className="recommendation-title">
                 Please see your recommended films:
@@ -207,6 +283,8 @@ const fetchAllMovieData = async () => {
                 onRate={handleRatingChange}
                 onNotInterested={handleNotInterested}
                 onAddToWatchlist={handleAddToWatchlist}
+                onConfirmRating={handleConfirmRating}
+                onLike={handleLikeMovie}
               />
             )}
           </div>

@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from 'react';
+import { FaHeart } from 'react-icons/fa';
 
 // HomeCard contains all the information required for a user to rate and review initial movies
-const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist}) => {
+const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist, onConfirmRating, onLike}) => {
   if (!movie) return null; // safety check
 
   return (
@@ -62,9 +63,22 @@ const HomeCard = ({ movie, rating, onRate, onNotInterested, onAddToWatchlist}) =
                   </option>
                 ))}
               </select>
+              {rating && (
+                <button
+                  className="confirm-rating-button"
+                  onClick={() => onConfirmRating(movie.id)}
+                >
+                  ✅ Confirm Rating
+                </button>
+              )}
             </div>
           )}
-
+          {onLike && (
+            <button className="like-button" onClick={() => onLike(movie)}>
+              <FaHeart className="heart-icon" />
+              Like
+            </button>
+          )}
           {onAddToWatchlist && (
             <button className="add-to-watchlist-button" onClick={() => onAddToWatchlist(movie)}>
               ➕ Add to Watchlist
