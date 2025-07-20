@@ -397,6 +397,45 @@ app.post('/api/getOrCreateUser', (req, res) => {
   });
 });
 
+app.get('/api/getUserImport', (req, res) => {
+  const userId = req.query.userId;
 
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing userId' });
+  }
+
+  const sql = 'SELECT imported FROM movie_capstone_db.users WHERE userId = ?';
+  pool.query(sql, [userId], (err, results) => {
+    if (err) {
+      console.error('Error checking consent:', err.message);
+      return res.status(500).json({ error: 'DB error' });
+    }
+
+    if (results.length === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ consented: results[0].consented === 1 });
+  });
+});
+
+app.post('/api/setImport', (req, res) => {
+  const { userId } = req.body;
+
+  if (!userId) {
+    return res.status(400).json({ error: 'Missing userId' });
+  }
+
+  const sql = 'UPDATE movie_capstone_db.users SET imported = TRUE WHERE userId = ?';
+
+  pool.query(sql, [userId], (err, result) => {
+    if (err) {
+      console.error('Error updating consent:', err.message);
+      return res.status(500).json({ error: 'Failed to update consent' });
+    }
+
+    res.status(200).json({ success: true });
+  });
+});
 
 app.listen(port, () => console.log(`Listening on port ${port}`));

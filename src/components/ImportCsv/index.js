@@ -71,6 +71,16 @@ const ImportCsv = () => {
         throw new Error('Failed to import one or both CSVs to server.');
       }
 
+      // Set imported = 1 for the user
+      const importRes = await fetch('/api/setImport', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ userId }),
+      });
+      if (!importRes.ok) {
+        throw new Error('Failed to update imported status.');
+      }
+
       setImported(true);
       setTimeout(() => navigate('/Home'), 1000);
     } catch (err) {
