@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const stringSimilarity = require('string-similarity');
 
 const app = express();
 app.use(cors());
@@ -256,6 +257,66 @@ app.post('/api/createUser', (req, res) => {
 });
 
 
+// Fuzzy match ratings for a user after import
+async function fuzzyMatchRatingsForUser(userId, pool) {
+  const query = (sql, params) => new Promise((resolve, reject) => {
+    pool.query(sql, params, (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  const ratings = await query('SELECT id, name, year FROM ratings WHERE userId = ? AND movie_id IS NULL', [userId]);
+  const movies = (await query('SELECT id, title, release_date FROM movies')).map(m => ({
+    ...m,
+    year: m.release_date ? new Date(m.release_date).getFullYear() : null
+  }));
+
+  for (const rating of ratings) {
+    const moviesForYear = movies.filter(m => m.year === rating.year);
+    if (moviesForYear.length === 0) continue;
+    const titles = moviesForYear.map(m => m.title);
+    const { bestMatch } = stringSimilarity.findBestMatch(rating.name, titles);
+    if (bestMatch.rating > 0.7) {
+      const matchedMovie = moviesForYear.find(m => m.title === bestMatch.target);
+      await query('UPDATE ratings SET movie_id = ? WHERE id = ?', [matchedMovie.id, rating.id]);
+      console.log(`Matched: '${rating.name}' (${rating.year}) -> '${matchedMovie.title}' (id=${matchedMovie.id})`);
+    } else {
+      console.log(`No good match for: '${rating.name}' (${rating.year})`);
+    }
+  }
+}
+
+// Fuzzy match likes for a user after import
+async function fuzzyMatchLikesForUser(userId, pool) {
+  const query = (sql, params) => new Promise((resolve, reject) => {
+    pool.query(sql, params, (err, results) => {
+      if (err) reject(err);
+      else resolve(results);
+    });
+  });
+
+  const likes = await query('SELECT id, name, year FROM likes WHERE userId = ? AND movie_id IS NULL', [userId]);
+  const movies = (await query('SELECT id, title, release_date FROM movies')).map(m => ({
+    ...m,
+    year: m.release_date ? new Date(m.release_date).getFullYear() : null
+  }));
+
+  for (const like of likes) {
+    const moviesForYear = movies.filter(m => m.year === like.year);
+    if (moviesForYear.length === 0) continue;
+    const titles = moviesForYear.map(m => m.title);
+    const { bestMatch } = stringSimilarity.findBestMatch(like.name, titles);
+    if (bestMatch.rating > 0.7) {
+      const matchedMovie = moviesForYear.find(m => m.title === bestMatch.target);
+      await query('UPDATE likes SET movie_id = ? WHERE id = ?', [matchedMovie.id, like.id]);
+      console.log(`Matched Like: '${like.name}' (${like.year}) -> '${matchedMovie.title}' (id=${matchedMovie.id})`);
+    } else {
+      console.log(`No good match for Like: '${like.name}' (${like.year})`);
+    }
+  }
+}
+
 app.post('/api/importCsv', (req, res) => {
   const { data, userId, table } = req.body;
 
@@ -280,6 +341,20 @@ app.post('/api/importCsv', (req, res) => {
       row['Letterboxd URI'] || null,
       parseFloat(row.Rating) || null
     ]);
+    pool.query(insertSql, [values], async (error, results) => {
+      if (error) {
+        console.error('❌ MySQL insert error:', error.message);
+        return res.status(500).json({ error: 'Failed to insert CSV data' });
+      }
+      // Fuzzy match after successful import
+      try {
+        await fuzzyMatchRatingsForUser(userId, pool);
+      } catch (err) {
+        console.error('Fuzzy match error:', err);
+      }
+      res.status(200).json({ message: `${table} CSV imported successfully`, inserted: results.affectedRows });
+    });
+    return;
   } else if (table === 'likes') {
     // likes/films.csv: Date, Name, Year, Letterboxd URI
     insertSql = `
@@ -297,10 +372,16 @@ app.post('/api/importCsv', (req, res) => {
     return res.status(400).json({ error: 'Invalid table specified' });
   }
 
-  pool.query(insertSql, [values], (error, results) => {
+  pool.query(insertSql, [values], async (error, results) => {
     if (error) {
       console.error('❌ MySQL insert error:', error.message);
       return res.status(500).json({ error: 'Failed to insert CSV data' });
+    }
+    // Fuzzy match after successful import
+    try {
+      await fuzzyMatchLikesForUser(userId, pool);
+    } catch (err) {
+      console.error('Fuzzy match error (likes):', err);
     }
     res.status(200).json({ message: `${table} CSV imported successfully`, inserted: results.affectedRows });
   });
