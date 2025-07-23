@@ -2,28 +2,34 @@ import React, { useEffect, useState, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
 import FirebaseContext from '../Firebase/context';
 import './VerifyEmail.css';
-import { sendEmailVerification, reload } from 'firebase/auth';
+import { sendEmailVerification, reload, onAuthStateChanged } from 'firebase/auth';
 
 const VerifyEmail = () => {
   const firebase = useContext(FirebaseContext);
   const navigate = useNavigate();
-  const [isVerified, setIsVerified] = useState(false);
+  const [user, setUser] = useState(null);
   const [checking, setChecking] = useState(false);
   const [error, setError] = useState(null);
   const [resendSuccess, setResendSuccess] = useState(null);
 
-  const user = firebase.auth.currentUser;
 
   useEffect(() => {
-    if (user && !user.emailVerified) {
-      sendEmailVerification(user).catch(err => {
-        console.error('Error sending verification email:', err);
-        setError('Failed to send verification email. Try refreshing.');
-      });
-    }
-  }, [user]);
+    const unsubscribe = onAuthStateChanged(firebase.auth, (currentUser) => {
+      setUser(currentUser);
+      if (currentUser && !currentUser.emailVerified) {
+        sendEmailVerification(currentUser).catch(err => {
+          console.error('Error sending verification email:', err);
+          setError('Failed to send verification email. Try refreshing.');
+        });
+      }
+    });
+
+    return () => unsubscribe();
+  }, [firebase.auth]);
 
   const handleRefresh = async () => {
+    if (!user) return;
+
     setChecking(true);
     setError(null);
 
@@ -55,6 +61,8 @@ const VerifyEmail = () => {
   };
 
   const handleResend = async () => {
+    if (!user) return;
+    
     try {
         if (user) {
         await sendEmailVerification(user);
