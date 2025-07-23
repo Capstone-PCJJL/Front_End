@@ -379,6 +379,28 @@ app.post('/api/getOrCreateUser', (req, res) => {
   });
 });
 
+app.post('/api/setVerified', (req, res) => {
+  const { firebaseId } = req.body;
+
+  if (!firebaseId) {
+    return res.status(400).json({ error: 'Missing firebaseId' });
+  }
+
+  const sql = 'UPDATE movie_capstone_db.users SET verified = TRUE WHERE firebaseId = ?';
+
+  pool.query(sql, [firebaseId], (err, result) => {
+    if (err) {
+      console.error('Error updating verified status:', err.message);
+      return res.status(500).json({ error: 'Failed to update verification' });
+    }
+
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    res.status(200).json({ success: true });
+  });
+});
 
 
 

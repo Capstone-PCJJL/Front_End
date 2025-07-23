@@ -7,6 +7,7 @@ import Signup from '../Signup';
 import Profile from '../Profile';
 import Project from '../Project';
 import Consent from '../Consent';
+import VerifyEmail from '../VerifyEmail';
 
 const App = () => {
 
@@ -21,6 +22,7 @@ const App = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/project" element={<Project />} />
         <Route path="/consent" element={<Consent />} />
+        <Route path="/verifyemail" element={<VerifyEmail />} />
 
         {/* Redirects */}
         <Route path="/" element={<Navigate to="/project" replace />} />
