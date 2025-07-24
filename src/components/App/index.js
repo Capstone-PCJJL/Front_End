@@ -5,6 +5,7 @@ import Watchlist from '../Watchlist';
 import Login from '../Login';
 import Signup from '../Signup';
 import Profile from '../Profile';
+import ImportCsv from '../ImportCsv';
 import Project from '../Project';
 import Consent from '../Consent';
 import VerifyEmail from '../VerifyEmail';
@@ -22,14 +23,13 @@ const App = () => {
         <Route path="/Profile" element={<Profile />} />
         <Route path="/project" element={<Project />} />
         <Route path="/consent" element={<Consent />} />
+        <Route path="/import-csv" element={<ImportCsv />} />
         <Route path="/verifyemail" element={<VerifyEmail />} />
 
         {/* Redirects */}
         <Route path="/" element={<Navigate to="/project" replace />} />
         <Route path="*" element={<Navigate to="/project" replace />} />
 
-        {/* <Route path="/" element={<Navigate to="/login" replace />} />
-        <Route path="*" element={<Navigate to="/login" replace />} /> */}
 
       </Routes>
     </Router>

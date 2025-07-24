@@ -15,15 +15,23 @@ const Consent = () => {
       }
 
       try {
-        const res = await fetch(`http://localhost:5500/api/getUserConsent?userId=${userId}`);
+        const res = await fetch(`/api/getUserConsent?userId=${userId}`);
         if (!res.ok) throw new Error('Failed to check consent');
 
         const data = await res.json();
         if (data.consented) {
-          navigate('/Home'); // already consented → redirect
+          // If already consented, check import status
+          const importRes = await fetch(`/api/getUserImport?userId=${userId}`);
+          const importData = await importRes.json();
+          if (!importRes.ok) throw new Error(importData.error || 'Failed to check import status');
+          if (!importData.imported) {
+            navigate('/import-csv');
+          } else {
+            navigate('/Home');
+          }
         }
       } catch (err) {
-        console.error('Error checking consent:', err);
+        console.error('Error checking consent/import:', err);
       }
     };
 
@@ -34,7 +42,7 @@ const Consent = () => {
     if (!agreed) return;
 
     try {
-      const response = await fetch('http://localhost:5500/api/setConsent', {
+      const response = await fetch('/api/setConsent', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -46,8 +54,15 @@ const Consent = () => {
         throw new Error('Consent update failed');
       }
 
-      // Success → redirect to login
-      navigate('/Home');
+      // After consent, check import status
+      const importRes = await fetch(`/api/getUserImport?userId=${userId}`);
+      const importData = await importRes.json();
+      if (!importRes.ok) throw new Error(importData.error || 'Failed to check import status');
+      if (!importData.imported) {
+        navigate('/import-csv');
+      } else {
+        navigate('/Home');
+      }
     } catch (err) {
       console.error(err);
       alert('There was an error submitting your consent.');
