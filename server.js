@@ -161,49 +161,31 @@ app.post('/api/addToWatchlist', (req, res) => {
 // API PUT that assigns ratings
 app.post('/api/addToRatings', (req, res) => {
   const { userId, movieId, rating } = req.body;
-
-  if (!userId || !movieId || rating == null) {
-    return res.status(400).json({ error: 'Missing userId, movieId, or rating' });
+  if (!userId || !movieId || !rating) {
+    return res.status(400).json({ error: 'Missing required fields' });
   }
 
-  // Convert to movie_capstone_db in production
-  const sql = `
-    INSERT INTO patrick_test.ratings (user_id, movie_id, rating)
-    VALUES (?, ?, ?)
-    ON DUPLICATE KEY UPDATE rating = VALUES(rating)
-  `;
-
-  pool.query(sql, [userId, movieId, rating], (err, results) => {
-    if (err) {
-      console.error('DB error:', err);
-      return res.status(500).json({ error: 'Failed to save movie rating' });
+  // Get the movie's name and year for this movieId
+  pool.query('SELECT title, release_date FROM movies WHERE id = ?', [movieId], (err, results) => {
+    if (err || results.length === 0) {
+      return res.status(500).json({ error: 'Movie not found' });
     }
+    const name = results[0].title;
+    const year = results[0].release_date ? new Date(results[0].release_date).getFullYear() : null;
 
-    res.status(200).json({ success: true });
+    // Insert into ratings table
+    pool.query(
+      'INSERT INTO ratings (userId, name, year, rating, movie_id, watched_date, letterboxd_uri) VALUES (?, ?, ?, ?, ?, NULL, NULL)',
+      [userId, name, year, rating, movieId],
+      (err2, result) => {
+        if (err2) {
+          return res.status(500).json({ error: 'Failed to insert rating' });
+        }
+        res.status(200).json({ success: true, id: result.insertId });
+      }
+    );
   });
 });
-
-// API PUT that assigns likes
-app.post('/api/likeMovie', (req, res) => {
-    const { userId, movieId } = req.body;
-  
-    if (!userId || !movieId) {
-      return res.status(400).json({ error: 'Missing userId or movieId' });
-    }
-  
-    const sql = 'INSERT INTO patrick_test.likes (user_id, movie_id) VALUES (?, ?)';
-    pool.query(sql, [userId, movieId], (err, results) => {
-      if (err) {
-        console.error('DB error:', err);
-        return res.status(500).json({ error: 'Failed to save like' });
-      }
-  
-      res.status(200).json({ success: true });
-    });
-  });
-
-
-
 
 /*
 
@@ -277,8 +259,9 @@ async function fuzzyMatchRatingsForUser(userId, pool) {
     if (moviesForYear.length === 0) continue;
     const titles = moviesForYear.map(m => m.title);
     const { bestMatch } = stringSimilarity.findBestMatch(rating.name, titles);
-    if (bestMatch.rating > 0.7) {
-      const matchedMovie = moviesForYear.find(m => m.title === bestMatch.target);
+    // Find the movie object for the best match (within the year)
+    const matchedMovie = moviesForYear.find(m => m.title === bestMatch.target);
+    if (bestMatch.rating > 0.7 && matchedMovie) {
       await query('UPDATE ratings SET movie_id = ? WHERE id = ?', [matchedMovie.id, rating.id]);
       console.log(`Matched: '${rating.name}' (${rating.year}) -> '${matchedMovie.title}' (id=${matchedMovie.id})`);
     } else {
@@ -307,8 +290,9 @@ async function fuzzyMatchLikesForUser(userId, pool) {
     if (moviesForYear.length === 0) continue;
     const titles = moviesForYear.map(m => m.title);
     const { bestMatch } = stringSimilarity.findBestMatch(like.name, titles);
-    if (bestMatch.rating > 0.7) {
-      const matchedMovie = moviesForYear.find(m => m.title === bestMatch.target);
+    // Find the movie object for the best match (within the year)
+    const matchedMovie = moviesForYear.find(m => m.title === bestMatch.target);
+    if (bestMatch.rating > 0.7 && matchedMovie) {
       await query('UPDATE likes SET movie_id = ? WHERE id = ?', [matchedMovie.id, like.id]);
       console.log(`Matched Like: '${like.name}' (${like.year}) -> '${matchedMovie.title}' (id=${matchedMovie.id})`);
     } else {
@@ -518,5 +502,34 @@ app.post('/api/setImport', (req, res) => {
     res.status(200).json({ success: true });
   });
 });
+
+app.post('/api/likeMovie', (req, res) => {
+  const { userId, movieId } = req.body;
+  if (!userId || !movieId) {
+    return res.status(400).json({ error: 'Missing required fields' });
+  }
+
+  // Get the movie's name and year for this movieId
+  pool.query('SELECT title, release_date FROM movies WHERE id = ?', [movieId], (err, results) => {
+    if (err || results.length === 0) {
+      return res.status(500).json({ error: 'Movie not found' });
+    }
+    const name = results[0].title;
+    const year = results[0].release_date ? new Date(results[0].release_date).getFullYear() : null;
+
+    // Insert into likes table
+    pool.query(
+      'INSERT INTO likes (userId, date, name, year, letterboxd_uri, movie_id) VALUES (?, NULL, ?, ?, NULL, ?)',
+      [userId, name, year, movieId],
+      (err2, result) => {
+        if (err2) {
+          return res.status(500).json({ error: 'Failed to insert like' });
+        }
+        res.status(200).json({ success: true, id: result.insertId });
+      }
+    );
+  });
+});
+
 
 app.listen(port, () => console.log(`Listening on port ${port}`));
