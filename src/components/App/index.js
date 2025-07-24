@@ -8,6 +8,7 @@ import Profile from '../Profile';
 import ImportCsv from '../ImportCsv';
 import Project from '../Project';
 import Consent from '../Consent';
+import VerifyEmail from '../VerifyEmail';
 
 const App = () => {
 
@@ -23,6 +24,7 @@ const App = () => {
         <Route path="/project" element={<Project />} />
         <Route path="/consent" element={<Consent />} />
         <Route path="/import-csv" element={<ImportCsv />} />
+        <Route path="/verifyemail" element={<VerifyEmail />} />
 
         {/* Redirects */}
         <Route path="/" element={<Navigate to="/project" replace />} />

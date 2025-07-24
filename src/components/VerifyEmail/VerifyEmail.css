@@ -1,6 +1,4 @@
-/* CinemaStack Modern Sign Up Styles */
-
-.container_s {
+.container_v {
   min-height: 100vh;
   width: 100vw;
   display: flex;
@@ -25,56 +23,28 @@
 .form h1 {
   color: #fff;
   font-size: 2.2em;
-  margin-bottom: 32px;
+  margin-bottom: 24px;
   font-family: 'Inter', Arial, sans-serif;
   font-weight: 700;
   letter-spacing: 1px;
+  text-align: center;
   text-shadow: 0 2px 8px rgba(30,0,63,0.2);
 }
 
-.form-group {
-  width: 100%;
-  margin-bottom: 20px;
-}
-
-.form-group input {
-  width: 100%;
-  padding: 16px 20px;
-  border: 1.5px solid #DEC4FF;
-  border-radius: 12px;
-  background: rgba(255,255,255,0.08);
-  color: #fff;
-  font-size: 1.08em;
-  font-family: 'Inter', Arial, sans-serif;
-  outline: none;
-  transition: border-color 0.2s, background 0.2s;
-  box-sizing: border-box;
-}
-
-.form-group input:focus {
-  border-color: #8e24aa;
-  background: rgba(255,255,255,0.15);
-}
-
-.error {
-  color: #ff6b81;
-  font-size: 0.95em;
-  margin-top: 5px;
+.form p {
+  color: #ddd;
+  font-size: 1.05em;
+  margin-bottom: 28px;
   text-align: center;
-  font-weight: 500;
-  min-height: 28px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  line-height: 1.5;
+  font-family: 'Inter', Arial, sans-serif;
 }
 
-.signup-btn {
+.verify-btn {
   width: auto;
   min-width: 2in;
   max-width: 100%;
-  margin-left: auto;
-  margin-right: auto;
-  padding: 16px 0;
+  padding: 16px 32px;
   background: linear-gradient(90deg, #6B00B2 0%, #DEC4FF 100%);
   color: #fff;
   border: none;
@@ -90,39 +60,27 @@
   display: block;
 }
 
-.signup-btn:hover:not(:disabled) {
+.verify-btn:hover:not(:disabled) {
   background: linear-gradient(90deg, #8e24aa 0%, #DEC4FF 100%);
   color: #fff;
 }
 
-.signup-btn:disabled {
+.verify-btn:disabled {
   background: #cccccc;
   color: #888;
   cursor: not-allowed;
 }
 
-.signup-footer {
-  margin-top: 18px;
+.error {
+  color: #ff6b81;
+  font-size: 0.95em;
+  margin-top: 16px;
   text-align: center;
-  width: 100%;
-}
-
-.signup-footer a {
-  color: #DEC4FF;
-  text-decoration: none;
-  font-weight: 700;
-  transition: color 0.2s;
-}
-
-.signup-footer a:hover {
-  text-decoration: underline;
-  color: #fff;
-}
-
-.signup-footer p {
-  margin: 0;
-  color: #fff;
-  font-size: 1em;
+  font-weight: 500;
+  min-height: 28px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 @media (max-width: 500px) {
@@ -134,3 +92,27 @@
     font-size: 1.5em;
   }
 }
+
+.resend-btn {
+  background: none;
+  color: #DEC4FF;
+  border: none;
+  font-size: 0.95em;
+  cursor: pointer;
+  margin-top: 4px;
+  text-decoration: underline;
+  font-family: 'Inter', Arial, sans-serif;
+  transition: color 0.2s;
+}
+
+.resend-btn:hover {
+  color: #fff;
+}
+
+.success {
+  color: #3adb76;
+  font-size: 0.95em;
+  margin-top: 10px;
+  text-align: center;
+}
+

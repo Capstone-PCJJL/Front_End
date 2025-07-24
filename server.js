@@ -462,9 +462,6 @@ app.post('/api/getOrCreateUser', (req, res) => {
   });
 });
 
-app.get('/api/getUserImport', (req, res) => {
-  const userId = req.query.userId;
-
   if (!userId) {
     return res.status(400).json({ error: 'Missing userId' });
   }

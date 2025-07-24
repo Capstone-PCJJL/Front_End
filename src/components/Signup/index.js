@@ -38,11 +38,17 @@ const SignUp = () => {
       const authUser = await firebase.doCreateUserWithEmailAndPassword(email, password);
       console.log('User created successfully:', authUser);
       // localStorage.setItem('userId', authUser.user.uid); // ✅ fixed variable name
+      const firebaseId = authUser.user.uid;
+      await fetch('http://localhost:5500/api/getOrCreateUser', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ firebaseId }),
+      });
       setEmail('');
       setPassword('');
       setConfirmPassword('');
       // navigate('/import-csv');
-      navigate('/login')
+      navigate('/verifyemail')
     } catch (error) {
       console.error('Error creating user:', error);
       setError(error.message);
@@ -89,7 +95,7 @@ const SignUp = () => {
           {error && <div className="error">{error}</div>}
 
           <button
-            className="btn"
+            className="signup-btn"
             type="submit"
             disabled={isInvalid}
           >
