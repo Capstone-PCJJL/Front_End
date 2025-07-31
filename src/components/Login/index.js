@@ -2,6 +2,7 @@ import React, { useState, useContext } from 'react'; // <-- include useContext h
 import { useNavigate } from 'react-router-dom';
 import FirebaseContext from '../Firebase/context';
 import './Login.css';
+import { Link } from 'react-router-dom';
 
 const Login = () => {
   const firebase = useContext(FirebaseContext);
@@ -128,9 +129,9 @@ const Login = () => {
         </form>
 
         <div className="login-footer">
-          <a href="/forgot-password" className="forgot-password">
+          <Link to="/forgot-password" className="forgot-password">
             Forgot Password?
-          </a>
+          </Link>
           <p>
             Don't have an account? <a href="/signup">Sign Up</a>
           </p>
